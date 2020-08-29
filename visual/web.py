@@ -44,8 +44,7 @@ def update_tabs(n_clicks):
 
 
 @app.callback(Output('tab-display', 'children'),
-            [Input('graph-tabs', 'value'),
-            Input()])
+            [Input('graph-tabs', 'value')])
 def render_content(tab):
     global graph_num
     graph_num = int(tab[4])

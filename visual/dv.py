@@ -1,5 +1,5 @@
 import plotly.graph_objects as go
-import car_data
+from car_data import ParseData
 
 
 #Graph data
@@ -94,13 +94,14 @@ def hideGraphs():
 
 #Data points every x unit (depends on x-axis variable)
 #i.e, for time variable: x / 100 = every x seconds
-listDelayValue = 50
+listDelayValue = 1
 
 class Graph:
     def __init__(self, x = None, data = None):
         self.x_axis = x
         self.y_axis = data
-        self.titles = car_data.titles
+        self.car = ParseData("sim.csv")
+        self.titles = self.car.titles
         '''
         for item in self.y_axis:
             if item in data_sets:
@@ -111,9 +112,10 @@ class Graph:
         figure = go.Figure()
         for key in self.y_axis:
             #if data_sets[key]:
-            figure.add_trace(go.Scatter(x=get_list(self.x_axis), y=get_list(key), mode='lines+markers', name=key))
+            figure.add_trace(go.Scatter(x=get_list(self.car, self.x_axis), y=get_list(self.car, key), mode='lines+markers', name=key))
 
         return figure
+        
         
 def main():
     Graph1 = Graph('t', ['pos_x','pos_y'])
@@ -124,9 +126,10 @@ def main():
     Graph2 = Graph('t', ['v','pos_y', 'a_long'])
     Graph2.display()
 
+
 #Function to transfer data into array
-def get_list(column_name):
-    ax = (car_data.get_var(column_name))
+def get_list(car, column_name):
+    ax = (car.get_var(column_name))
     data = []
     listDelay = listDelayValue 
     for itm in ax:
@@ -135,5 +138,7 @@ def get_list(column_name):
             listDelay = 0
         listDelay += 1
     return data
+    
+    
 if __name__ == '__main__':
     main()
