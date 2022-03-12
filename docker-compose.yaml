@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb:latest
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - influxdb:/var/lib/influxdb2
+    ports:
+      - 8086:8086
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - grafana_storage:/var/lib/grafana
+      - ./grafana_config/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana_config/influxdb.yaml:/etc/grafana/provisioning/datasources/influxdb.yaml
+      - ./grafana_config/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+      - ./grafana_config/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - 3000:3000
+    depends_on:
+      - influxdb
+  app:
+    container_name: app
+    build:
+      context: .
+      args:
+        reload: 1
+    restart: always
+    env_file:
+      - .env
+    volumes: 
+      - ./app:/lhr-pi/app
+    depends_on:
+      - grafana
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: unless-stopped 
+    env_file:
+      - .env
+    ports: 
+      - 80:80
+    volumes:
+      - ./nginx_templates:/etc/nginx/templates
+    depends_on:
+      - app
+  hostapd:
+    container_name: hostapd
+    image: sdelrio/rpi-hostap:latest
+    restart: unless-stopped
+    privileged: true
+    network_mode: "host"
+    environment:
+      - INTERFACE=wlan0
+      - CHANNEL=6
+      - SSID=lhrpi
+      - AP_ADDR=198.168.254.1
+      - SUBNET=198.168.254.0
+      - WPA_PASSPHRASE=password
+      - OUTGOINGS=docker0
+volumes: 
+  influxdb:
+  grafana_storage:
