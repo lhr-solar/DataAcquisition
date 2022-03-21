@@ -47,6 +47,8 @@ Note: `uname -s`and `uname -m` outputs are weird on Raspberry Pis resulting in i
 
 ### Git Clone and Run
 
+Ensure that you are not connected to a network! This is mostly easily done through using VNC Viewer to disconnect from your WiFi network. Do not disable the Wifi adapter though.
+
 Git clone
 ```bash
 git clone https://github.com/lanc33llis/lhr-pi
