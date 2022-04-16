@@ -1,4 +1,9 @@
-#!/usr/bin/env python3
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
 import socket
 from imu.py import IMUparse
 #HOST = socket.gethostbyname(socket.gethostname())
@@ -62,11 +67,22 @@ def GPSparse(data):
     pass
 
 
-def CANparse(canArray):
+async def CANparse(canArray):
     canID = int.from_bytes(canArray[0:2], "big")
     index = int.from_bytes(canArray[2:3], "big")
     rawData = int.from_bytes(canArray[3: 7], "big")
-    print(CANIDs[canID], index, rawData) #will be replaced by writing to database
+    print(CANIDs[canID], str(index), rawData) #will be replaced by writing to database
+    bucket = "LHR"
+    try:
+        r = []
+        client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+        query_api = client.query_api()
+        a1 = Point(CANIDs[canID]).field(index, rawData)    
+        write_api.write(bucket=bucket, record=r)
+    except Exception:
+        pass
+    await asyncio.sleep(.2)
 
 
 def handle_client(conn, addr):
