@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 import socket
-from imu.py import IMUparse
+import imu
 #HOST = socket.gethostbyname(socket.gethostname())
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
@@ -72,6 +72,7 @@ async def CANparse(canArray):
     index = int.from_bytes(canArray[2:3], "big")
     rawData = int.from_bytes(canArray[3: 7], "big")
     print(CANIDs[canID], str(index), rawData) #will be replaced by writing to database
+    '''
     bucket = "LHR"
     try:
         r = []
@@ -83,7 +84,7 @@ async def CANparse(canArray):
     except Exception:
         pass
     await asyncio.sleep(.2)
-
+    '''
 
 def handle_client(conn, addr):
     print(f"Connected by {addr}")
@@ -101,7 +102,7 @@ def handle_client(conn, addr):
 
     if ethId == 1:
         print(f"ID: IMU")
-        IMUparse(array)
+        imu.IMUparse(array)
     elif ethId == 2:
         print(f"ID: GPS")
         GPSparse(array)
