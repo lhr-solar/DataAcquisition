@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -8,6 +10,17 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 import os
 import random
 import asyncio
+
+import socket
+#HOST = socket.gethostbyname(socket.gethostname())
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+print(s.getsockname()[0])
+HOST = s.getsockname()[0]
+PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+BYTE = 1
+FORMAT = 'utf-8'
+DISCONNECT_MESSAGE = "DISCONNECT"
 
 async def tester():
     bucket = "LHR"
@@ -38,6 +51,49 @@ async def tester():
             pass
         await asyncio.sleep(.2)
 
+async def CANparse(data):
+    pass
+
+async def IMUparse(data):
+    pass
+
+async def GPSparse(data):
+    pass
+
+def handle_client(conn, addr):
+    print(f"Connected by {addr}")
+    ethId = int.from_bytes(conn.recv(1), "big")
+    length = int.from_bytes(conn.recv(1), "big")
+    
+    #put CAN/IMU/GPS message into bytearray
+    #necessary as recv might not always return the given bytes
+    array = []
+    i = length
+    while(i > 0):
+        received = bytearray(conn.recv(i))
+        array += received
+        i -= len(received)
+
+    if ethId == 1:
+        print(f"ID: IMU")
+        IMUparse(array)
+    elif ethId == 2:
+        print(f"ID: GPS")
+        GPSparse(array)
+    elif ethId == 3:
+        print(f"ID: CAN")
+        CANparse(array)
+
+def start():
+    print("Server starting...")
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((HOST, PORT))
+        s.listen()
+        print(f"Server listening on {HOST}")
+        conn, addr = s.accept()
+        with conn:
+            handle_client(conn, addr)
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -45,7 +101,8 @@ templates = Jinja2Templates(directory="app/templates")
 
 @app.on_event("startup")
 async def on_startup():
-    asyncio.create_task(tester()) 
+    #asyncio.create_task(tester()) 
+    asyncio.create_task(start())
 
 
 @app.get("/", response_class=HTMLResponse)
