@@ -9,49 +9,42 @@ PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 BYTE = 1
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "DISCONNECT"
-f = open("message.txt", "w")
+
 def IMUparse(data):
     pass
 def GPSparse(data):
     pass
-def RTCparse(data):
-    pass
-def CANparse(data):
-    pass
+def CANparse(canArray):
+    canID = int.from_bytes(canArray[0:2], "big")
+    index = int.from_bytes(canArray[2:3], "big")
+    rawData = int.from_bytes(canArray[3: 7], "big")
+    print(canID, index, rawData)
+
+
 def handle_client(conn, addr):
     print(f"Connected by {addr}")
-    for i in range(0, 5):
-        f.write(str(conn.recv(BYTE)))
-    f.close()
-        #if id is None:
-        #    continue
-'''
-length = conn.recv(BYTE)
-length = int.from_bytes(length, "big")
-id = int.from_bytes(id, "big")
-data = conn.recv(length)
-if id == 1:
-    print(f"ID: IMU")
-    IMUparse(data)
-elif id == 2:
-    print(f"ID: GPS")
-    GPSparse(data)
-elif id == 3:
-    print(f"ID: RTC")
-    RTCparse(data)
-elif id == 4:
-    print(f"ID: CAN")
-    CANparse(data)
-else:
-    continue
-print(f"Length: {length}")
-print(f"Data: {data}")
-f.write("ID: " + str(id))
-f.write("\n")
-f.write("Length: " + str(length))
-f.write("\n")
-f.write("Data: " + str(data))
-'''
+    ethId = int.from_bytes(conn.recv(1))
+    length = int.from_bytes(conn.recv(1))
+    
+    #put CAN/IMU/GPS message into bytearray
+    #necessary as recv might not always return the given bytes
+    array = []
+    i = length
+    while(i > 0):
+        received = bytearray(conn.recv(i))
+        array.append(received)
+        i - len(received)
+
+    if ethId == 1:
+        print(f"ID: IMU")
+        IMUparse(array)
+    elif ethId == 2:
+        print(f"ID: GPS")
+        GPSparse(array)
+    elif ethId == 3:
+        print(f"ID: CAN")
+        CANparse(array)
+
 def start():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
