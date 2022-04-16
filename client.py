@@ -1,29 +1,18 @@
+#!/usr/bin/env python3
+
 import socket
 
 #HOST = socket.gethostbyname(socket.gethostname())
-HOST = "169.254.48.219"
-PORT = 9873
+HOST = "169.254.95.217"
+PORT = 65432
 LENGTH = 64
 FORMAT = 'utf-8'
 DISCONNECT_MESSAGE = "DISCONNECT"
-BYTE = 1
-f = open("message.txt", "w")
 
-def interpretData():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-        id = s.recv(BYTE)
-        length = s.recv(BYTE)
-        length = int.from_bytes(length, "big")
-        id = int.from_bytes(id, "big")
-        data = s.recv(length) 
-        f.write("ID: " + str(id))
-        f.write("Length: " + str(length))
-        f.write("Data: " + str(data))
-        f.close()
+def send(msg):
+	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+		s.connect((HOST, PORT))
+		s.send(msg)
+		print(s.recv(1024).decode(FORMAT))
 
-while(True):
-    try:
-        interpretData()
-    except:
-        continue
+send(bytes([0x3, 0x7, 0x1, 0x2, 0x4, 0x1, 0x2, 0x3, 0x4]))		# b'\0x1\0x2'
