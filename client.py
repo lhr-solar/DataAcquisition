@@ -3,7 +3,7 @@
 import socket
 
 #HOST = socket.gethostbyname(socket.gethostname())
-HOST = "169.254.95.217"
+HOST = "169.254.48.219"
 PORT = 65432
 LENGTH = 64
 FORMAT = 'utf-8'
