@@ -17,10 +17,11 @@ import asyncio
 
 import socket
 #HOST = socket.gethostbyname(socket.gethostname())
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.connect(("8.8.8.8", 80))
-print(s.getsockname()[0])
-HOST = s.getsockname()[0]
+#s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#s.connect(("8.8.8.8", 80))
+#print(s.getsockname()[0])
+#HOST = s.getsockname()[0]
+HOST = "0.0.0.0"
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 BYTE = 1
 FORMAT = 'utf-8'

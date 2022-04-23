@@ -10,8 +10,9 @@ COPY requirements.txt /lhr-pi
 RUN pip3 install --no-cache-dir --upgrade -r /lhr-pi/requirements.txt
 COPY app /lhr-pi/app
 WORKDIR /lhr-pi
+EXPOSE 65432
 
-CMD [ "python3", "-u", "main.py" ]
+CMD [ "python3", "-u", "app/main.py" ]
 
 # FROM base AS branch-version-1
 # ENV RELOAD="--reload"

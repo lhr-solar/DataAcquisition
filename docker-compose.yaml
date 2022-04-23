@@ -29,6 +29,7 @@ services:
       - influxdb
   app:
     container_name: app
+    image: dataacquisition_app:latest
     build:
       context: .
       args:
@@ -37,7 +38,7 @@ services:
     env_file:
       - .env
     ports:
-      - 65432:65432/udp
+      - 65432:65432
     volumes: 
       - ./app:/lhr-pi/app
     depends_on:
