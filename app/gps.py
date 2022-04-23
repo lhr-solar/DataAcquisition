@@ -25,8 +25,8 @@ import os
 async def GPSparse(data):
     bucket = "LHR"
     hr = ord(int.from_bytes(data[0], "big")) + ord(int.from_bytes(data[1], "big"))
-    min = int.from_bytes(data[2:4], "big")
-    sec = int.from_bytes(data[4:6], "big")
+    min = ord(int.from_bytes(data[2], "big")) + ord(int.from_bytes(data[3], "big"))
+    sec = ord(int.from_bytes(data[4], "big")) + ord(int.from_bytes(data[5], "big"))
     ms = int.from_bytes(data[6:9], "big")
     latitude_Deg = int.from_bytes(data[9:11], "big")
     latitude_Min = int.from_bytes(data[11:17], "big")
