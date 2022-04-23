@@ -7,9 +7,6 @@ from fastapi.templating import Jinja2Templates
 
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
-#import can
-#from imu.py import IMUparse
-#from gps.py import GPSparse
 
 import os
 import random
@@ -119,40 +116,162 @@ def CANparse(canArray):
         write_api.write(bucket=bucket, record=r)
     except Exception:
         pass
-    #await asyncio.sleep(.2)
 
-#async def IMUparse(data):
-    #pass
+def IMUparse(array):
+    accelx = array[0:2]
+    accelx = int.from_bytes(accelx, "big")
+    print(f"Accelx: {accelx}")  #printing just for testing purposes
 
-#async def GPSparse(data):
-    #pass
+    accely = array[2:4]
+    accely = int.from_bytes(accely, "big")
+    print(f"Accely: {accely}")
+
+    accelz = array[4:6]
+    accelz = int.from_bytes(accelz, "big")
+    print(f"Accelz: {accelz}")
+
+    magx = array[6:8]
+    magx = int.from_bytes(magx, "big")
+    print(f"Magx: {magx}")
+
+    magy = array[8:10]
+    magy = int.from_bytes(magy, "big")
+    print(f"Magy: {magy}")
+
+    magz = array[10:12]
+    magz = int.from_bytes(magz, "big")
+    print(f"Magz: {magz}")
+
+    gyrx = array[12:14]
+    gyrx = int.from_bytes(gyrx, "big")
+    print(f"Gyrx: {gyrx}")
+
+    gyry = array[14:16]
+    gyry = int.from_bytes(gyry, "big")
+    print(f"Gyry: {gyry}")
+
+    gyrz = array[16:18]
+    gyrz = int.from_bytes(gyrz, "big")
+    print(f"Gyrz: {gyrz}")
+
+    bucket = "LHR"
+    try:
+        r = []
+        client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+        query_api = client.query_api()
+
+        a1 = Point("Accelerometer").field("x", accelx)
+        a2 = Point("Accelerometer").field("y", accely)
+        a3 = Point("Accelerometer").field("z", accelz)
+        r += [a1, a2, a3]
+
+        m1 = Point("Magnetometer").field("x", magx)
+        m2 = Point("Magnetometer").field("y", magy)
+        m3 = Point("Magnetometer").field("z", magz)
+        r += [m1, m2, m3]
+
+        g1 = Point("Gyroscope").field("x", gyrx)
+        g2 = Point("Gyroscope").field("y", gyry)
+        g3 = Point("Gyroscope").field("z", gyrz)
+        r += [g1, g2, g3]
+    
+        write_api.write(bucket=bucket, record=r)
+    except Exception:
+        pass
+
+def GPSparse(data):
+    bucket = "LHR"
+    hr = ord(int.from_bytes(data[0], "big")) + ord(int.from_bytes(data[1], "big"))
+    min = ord(int.from_bytes(data[2], "big")) + ord(int.from_bytes(data[3], "big"))
+    sec = ord(int.from_bytes(data[4], "big")) + ord(int.from_bytes(data[5], "big"))
+    ms = int.from_bytes(data[6:9], "big")
+    latitude_Deg = int.from_bytes(data[9:11], "big")
+    latitude_Min = int.from_bytes(data[11:17], "big")
+    NorthSouth = int.from_bytes(data[17], "big")
+    longitude_Deg = int.from_bytes(data[18:21], "big")
+    longitude_Min = int.from_bytes(data[21:27], "big")
+    EastWest = int.from_bytes(data[27], "big")
+    speedInKnots = int.from_bytes(data[28:32], "big")
+    day = int.from_bytes(data[32:34], "big")
+    month = data[34:36]
+    year = data[36:40]
+    magneticVariation_Deg = data[40:44]
+    magneticVariation_EastWest = data[44]
+
+    print(f"hr: {hr}")
+    print(f"min: {min}")
+    print(f"sec: {sec}")
+    print(f"ms: {ms}")
+    print(f"latitude_Deg: {latitude_Deg}")
+    print(f"latitude_Min: {latitude_Min}")
+    print(f"NorthSouth: {NorthSouth}")
+    print(f"longitude_Deg: {longitude_Deg}")
+    print(f"longitude_Min: {longitude_Min}")
+    print(f"EastWest: {EastWest}")
+    print(f"speedInKnots: {speedInKnots}")
+    print(f"day: {day}")
+    print(f"year: {year}")
+    print(f"month: {month}")
+    print(f"magneticVariation_Deg: {magneticVariation_Deg}")
+    print(f"magneticVariation_EastWest: {magneticVariation_EastWest}")
+
+    try:
+        r = []
+        client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
+        write_api = client.write_api(write_options=SYNCHRONOUS)
+        query_api = client.query_api()
+
+        g1 = Point("hr").field(hr)
+        g2 = Point("min").field(min)
+        g3 = Point("ms").field(ms)
+        g4 = Point("latitute_Deg").field(latitude_Deg)
+        g5 = Point("latitude_Min").field(latitude_Min)
+        g6 = Point("NorthSouth").field(NorthSouth)
+        g7 = Point("longitude_Deg").field(longitude_Deg)
+        g8 = Point("longitude_Min").field(longitude_Min)
+        g9 = Point("EastWest").field(EastWest)
+        g10 = Point("speedInKnots").field(speedInKnots)
+        g11 = Point("day").field(day)
+        g12 = Point("year").field(year)
+        g13 = Point("month").field(month)
+        g14 = Point("magneticVariation_Deg").field(magneticVariation_Deg)
+        g15 = Point("magneticVariation_EastWest").field(magneticVariation_EastWest)
+
+        r += [g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15]
+
+
+        write_api.write(bucket=bucket, record=r)
+
+    except Exception:
+        pass
 
 def handle_client(conn, addr):
-    print(f"Connected by {addr}")
-    """
-    print(f"Connected by {addr}")
-    ethId = int.from_bytes(conn.recv(1), "big")
-    length = int.from_bytes(conn.recv(1), "big")
-    
-    #put CAN/IMU/GPS message into bytearray
-    #necessary as recv might not always return the given bytes
-    array = []
-    i = length
-    while(i > 0):
-        received = bytearray(conn.recv(i))
-        array += received
-        i -= len(received)
 
-    if ethId == 1:
-        print(f"ID: IMU")
-        #IMUparse(array)
-    elif ethId == 2:
-        print(f"ID: GPS")
-        #GPSparse(array)
-    elif ethId == 3:
-        print(f"ID: CAN")
-        CANparse(array)
-    """
+    print(f"Connected by {addr}")
+    while(1):
+        ethId = int.from_bytes(conn.recv(1), "big")
+        length = int.from_bytes(conn.recv(1), "big")
+
+        #put CAN/IMU/GPS message into bytearray
+        #necessary as recv might not always return the given bytes
+        array = []
+        i = length
+        while(i > 0):
+            received = bytearray(conn.recv(i))
+            array += received
+            i -= len(received)
+
+        if ethId == 1:
+            print(f"ID: IMU")
+            IMUparse(array)
+        elif ethId == 2:
+            print(f"ID: GPS")
+            GPSparse(array)
+        elif ethId == 3:
+            print(f"ID: CAN")
+            CANparse(array)
+
 
 def start():
     print("Server starting...", flush=True)
