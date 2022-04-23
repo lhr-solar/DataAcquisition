@@ -102,7 +102,7 @@ async def tester():
             pass
         await asyncio.sleep(.2)
 
-async def CANparse(canArray):
+def CANparse(canArray):
     canID = int.from_bytes(canArray[0:2], "big")
     index = int.from_bytes(canArray[2:3], "big")
     rawData = int.from_bytes(canArray[3: 7], "big")
@@ -118,7 +118,7 @@ async def CANparse(canArray):
         write_api.write(bucket=bucket, record=r)
     except Exception:
         pass
-    await asyncio.sleep(.2)
+    #await asyncio.sleep(.2)
 
 #async def IMUparse(data):
     #pass
@@ -126,7 +126,9 @@ async def CANparse(canArray):
 #async def GPSparse(data):
     #pass
 
-async def handle_client(conn, addr):
+def handle_client(conn, addr):
+    print(f"Connected by {addr}")
+    """
     print(f"Connected by {addr}")
     ethId = int.from_bytes(conn.recv(1), "big")
     length = int.from_bytes(conn.recv(1), "big")
@@ -149,9 +151,10 @@ async def handle_client(conn, addr):
     elif ethId == 3:
         print(f"ID: CAN")
         CANparse(array)
+    """
 
-async def start():
-    print("Server starting...")
+def start():
+    print("Server starting...", flush=True)
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
         s.listen()
@@ -159,7 +162,7 @@ async def start():
         conn, addr = s.accept()
         with conn:
             handle_client(conn, addr)
-
+"""
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -175,3 +178,6 @@ async def on_startup():
 async def read_root(request: Request):
     ip = os.environ.get("PI_IP")
     return templates.TemplateResponse("index.html", {"request": request, "ip": ip})
+"""
+
+start()

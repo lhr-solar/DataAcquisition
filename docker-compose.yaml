@@ -36,6 +36,8 @@ services:
     restart: always
     env_file:
       - .env
+    ports:
+      - 65432:65432/udp
     volumes: 
       - ./app:/lhr-pi/app
     depends_on:
