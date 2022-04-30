@@ -1,7 +1,10 @@
+#comment out to write to the dashboard
+'''
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 import asyncio
 import os
+'''
 
 # typedef struct{
 #     char hr[2]; // Will not use these parameters unless we have to
@@ -24,8 +27,7 @@ import os
 
 import secrets
 
-
-async def GPSparse(data):
+def GPSparse(data):
     bucket = "LHR"
 
     hr = chr(data[0]) + chr(data[1])
@@ -43,8 +45,10 @@ async def GPSparse(data):
     month = chr(data[34]) + chr(data[35])  
     year = chr(data[36]) + chr(data[37]) + chr(data[38]) + chr(data[39])  
     magneticVariation_Deg = chr(data[40]) + chr(data[41]) + chr(data[42]) + chr(data[43]) 
-    magneticVariation_EastWest = chr(data[44]) 
+    magneticVariation_EastWest = chr(data[44])
 
+    #comment out if testing on local computer
+    print("Payload: " + data + "\n")
     print(f"hr: {hr}")
     print(f"min: {min}")
     print(f"sec: {sec}")
@@ -62,6 +66,8 @@ async def GPSparse(data):
     print(f"magneticVariation_Deg: {magneticVariation_Deg}")
     print(f"magneticVariation_EastWest: {magneticVariation_EastWest}")
 
+    #comment out to write to the dashboard
+    '''
     while True:
         try:
             r = []
@@ -93,3 +99,4 @@ async def GPSparse(data):
         except Exception:
             pass
         await asyncio.sleep(.2)
+    '''

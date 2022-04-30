@@ -1,3 +1,5 @@
+#comment out to write to the dasboard
+'''
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -7,43 +9,48 @@ from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 import os
 import asyncio
+'''
 
-async def IMUparse(array):
+def IMUparse(array):
+    print("Payload: " + array + "\n")
     accelx = array[0:2]
-    accelx = int.from_bytes(accelx, "big")
+    accelx = int.from_bytes(accelx, "little")
     print(f"Accelx: {accelx}")  #printing just for testing purposes
 
     accely = array[2:4]
-    accely = int.from_bytes(accely, "big")
+    accely = int.from_bytes(accely, "little")
     print(f"Accely: {accely}")
 
     accelz = array[4:6]
-    accelz = int.from_bytes(accelz, "big")
+    accelz = int.from_bytes(accelz, "little")
     print(f"Accelz: {accelz}")
 
     magx = array[6:8]
-    magx = int.from_bytes(magx, "big")
+    magx = int.from_bytes(magx, "little")
     print(f"Magx: {magx}")
 
     magy = array[8:10]
-    magy = int.from_bytes(magy, "big")
+    magy = int.from_bytes(magy, "little")
     print(f"Magy: {magy}")
 
     magz = array[10:12]
-    magz = int.from_bytes(magz, "big")
+    magz = int.from_bytes(magz, "little")
     print(f"Magz: {magz}")
 
     gyrx = array[12:14]
-    gyrx = int.from_bytes(gyrx, "big")
+    gyrx = int.from_bytes(gyrx, "little")
     print(f"Gyrx: {gyrx}")
 
     gyry = array[14:16]
-    gyry = int.from_bytes(gyry, "big")
+    gyry = int.from_bytes(gyry, "little")
     print(f"Gyry: {gyry}")
 
     gyrz = array[16:18]
-    gyrz = int.from_bytes(gyrz, "big")
+    gyrz = int.from_bytes(gyrz, "little")
     print(f"Gyrz: {gyrz}")
+
+
+    '''
 
     bucket = "LHR"
     try:
@@ -71,3 +78,4 @@ async def IMUparse(array):
     except Exception:
         pass
     await asyncio.sleep(.2)
+    '''
