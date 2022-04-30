@@ -10,7 +10,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 import os
 import random
-import asyncio
+import threading
 
 import socket
 #HOST = socket.gethostbyname(socket.gethostname())
@@ -109,11 +109,17 @@ def CANparse(canArray):
     try:
         r = []
         client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
+        print("created client", flush=True)
         write_api = client.write_api(write_options=SYNCHRONOUS)
+        print("write_api", flush=True)
         query_api = client.query_api()
+        print("query_api", flush=True)
         a1 = Point(CANIDs[canID]).field(index, rawData)
-        r += a1    
+        print("Point a1", flush=True)
+        r += [a1]   
+        print("added a1", flush=True)
         write_api.write(bucket=bucket, record=r)
+        print("write to bucket", flush=True)
     except Exception:
         print("Error writing to database", flush=True)
 
