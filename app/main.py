@@ -115,7 +115,7 @@ def CANparse(canArray):
         r += a1    
         write_api.write(bucket=bucket, record=r)
     except Exception:
-        pass
+        print("Error writing to database", flush=True)
 
 def IMUparse(array):
     accelx = array[0:2]
@@ -178,7 +178,7 @@ def IMUparse(array):
     
         write_api.write(bucket=bucket, record=r)
     except Exception:
-        pass
+        print("Error writing to database", flush=True)
 
 def GPSparse(data):
     bucket = "LHR"
@@ -244,7 +244,7 @@ def GPSparse(data):
         write_api.write(bucket=bucket, record=r)
 
     except Exception:
-        pass
+        print("Error writing to database", flush=True)
 
 def handle_client(conn, addr):
 
