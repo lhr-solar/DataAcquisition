@@ -8,10 +8,10 @@ from fastapi.templating import Jinja2Templates
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 
-import os
+import time
 import random
-import threading
 import socket
+import os
 
 import can
 import gps
@@ -33,7 +33,7 @@ async def tester():
 
     client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
     write_api = client.write_api(write_options=SYNCHRONOUS)
-    query_api = client.query_api()
+
     while True:
         try:
             r = []
@@ -56,7 +56,8 @@ async def tester():
             write_api.write(bucket=bucket, record=r)
         except Exception:
             pass
-        await asyncio.sleep(.2)
+        time.sleep(.2)
+        
 
 def handle_client(conn, addr):
 
@@ -65,8 +66,6 @@ def handle_client(conn, addr):
     print("created client", flush=True)
     write_api = client.write_api(write_options=SYNCHRONOUS)
     print("write_api", flush=True)
-    query_api = client.query_api()
-    print("query_api", flush=True)
 
     while(1):
         ethId = int.from_bytes(conn.recv(1), "little")
@@ -82,14 +81,15 @@ def handle_client(conn, addr):
 
         if ethId == 1:
             print(f"ID: IMU")
-            IMUparse(array, client, write_api, query_api)
+            r = imu.IMUparse(array)
         elif ethId == 2:
             print(f"ID: GPS")
-            GPSparse(array, client, write_api, query_api)
+            r = gps.GPSparse(array)
         elif ethId == 3:
             print(f"ID: CAN")
-            CANparse(array, client, write_api, query_api)
+            r = can.CANparse(array)
 
+        write_api.write(bucket="LHR", record=r)
 
 def start():
     print("Server starting...", flush=True)

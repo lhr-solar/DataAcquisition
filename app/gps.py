@@ -23,7 +23,6 @@ import os
 # } GPSData_t;
 
 async def GPSparse(data):
-    bucket = "LHR"
     hr = ord(int.from_bytes(data[0], "little")) + ord(int.from_bytes(data[1], "little"))
     min = ord(int.from_bytes(data[2], "little")) + ord(int.from_bytes(data[3], "little"))
     sec = ord(int.from_bytes(data[4], "little")) + ord(int.from_bytes(data[5], "little"))
@@ -61,9 +60,6 @@ async def GPSparse(data):
     while True:
         try:
             r = []
-            client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
-            write_api = client.write_api(write_options=SYNCHRONOUS)
-            query_api = client.query_api()
 
             g1 = Point("hr").field(hr)
             g2 = Point("min").field(min)
@@ -82,10 +78,5 @@ async def GPSparse(data):
             g15 = Point("magneticVariation_EastWest").field(magneticVariation_EastWest)
 
             r += [g1, g2, g3, g4, g5, g6, g7, g8, g9, g10, g11, g12, g13, g14, g15]
-
-
-            write_api.write(bucket=bucket, record=r)
-
-        except Exception:
-            pass
-        await asyncio.sleep(.2)
+            
+            return r

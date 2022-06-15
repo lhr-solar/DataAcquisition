@@ -43,9 +43,6 @@ async def IMUparse(array):
     bucket = "LHR"
     try:
         r = []
-        client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
-        write_api = client.write_api(write_options=SYNCHRONOUS)
-        query_api = client.query_api()
 
         a1 = Point("Accelerometer").field("x", accelx)
         a2 = Point("Accelerometer").field("y", accely)
@@ -61,8 +58,5 @@ async def IMUparse(array):
         g2 = Point("Gyroscope").field("y", gyry)
         g3 = Point("Gyroscope").field("z", gyrz)
         r += [g1, g2, g3]
-    
-        write_api.write(bucket=bucket, record=r)
-    except Exception:
-        pass
-    await asyncio.sleep(.2)
+
+        return r
