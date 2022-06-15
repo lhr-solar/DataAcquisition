@@ -33,8 +33,8 @@ def handle_client(conn, addr):
         if id is None:
             continue
         length = conn.recv(BYTE)
-        length = int.from_bytes(length, "big")
-        id = int.from_bytes(id, "big")
+        length = int.from_bytes(length, "little")
+        id = int.from_bytes(id, "little")
         data = conn.recv(length)
         f.write("ID: " + str(id))
         f.write("Length: " + str(length))

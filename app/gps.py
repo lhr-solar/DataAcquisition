@@ -24,18 +24,18 @@ import os
 
 async def GPSparse(data):
     bucket = "LHR"
-    hr = ord(int.from_bytes(data[0], "big")) + ord(int.from_bytes(data[1], "big"))
-    min = ord(int.from_bytes(data[2], "big")) + ord(int.from_bytes(data[3], "big"))
-    sec = ord(int.from_bytes(data[4], "big")) + ord(int.from_bytes(data[5], "big"))
-    ms = int.from_bytes(data[6:9], "big")
-    latitude_Deg = int.from_bytes(data[9:11], "big")
-    latitude_Min = int.from_bytes(data[11:17], "big")
-    NorthSouth = int.from_bytes(data[17], "big")
-    longitude_Deg = int.from_bytes(data[18:21], "big")
-    longitude_Min = int.from_bytes(data[21:27], "big")
-    EastWest = int.from_bytes(data[27], "big")
-    speedInKnots = int.from_bytes(data[28:32], "big")
-    day = int.from_bytes(data[32:34], "big")
+    hr = ord(int.from_bytes(data[0], "little")) + ord(int.from_bytes(data[1], "little"))
+    min = ord(int.from_bytes(data[2], "little")) + ord(int.from_bytes(data[3], "little"))
+    sec = ord(int.from_bytes(data[4], "little")) + ord(int.from_bytes(data[5], "little"))
+    ms = int.from_bytes(data[6:9], "little")
+    latitude_Deg = int.from_bytes(data[9:11], "little")
+    latitude_Min = int.from_bytes(data[11:17], "little")
+    NorthSouth = int.from_bytes(data[17], "little")
+    longitude_Deg = int.from_bytes(data[18:21], "little")
+    longitude_Min = int.from_bytes(data[21:27], "little")
+    EastWest = int.from_bytes(data[27], "little")
+    speedInKnots = int.from_bytes(data[28:32], "little")
+    day = int.from_bytes(data[32:34], "little")
     month = data[34:36]
     year = data[36:40]
     magneticVariation_Deg = data[40:44]

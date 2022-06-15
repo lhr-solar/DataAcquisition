@@ -68,9 +68,9 @@ def GPSparse(data):
 
 
 async def CANparse(canArray):
-    canID = int.from_bytes(canArray[0:2], "big")
-    index = int.from_bytes(canArray[2:3], "big")
-    rawData = int.from_bytes(canArray[3: 7], "big")
+    canID = int.from_bytes(canArray[0:2], "little")
+    index = int.from_bytes(canArray[2:3], "little")
+    rawData = int.from_bytes(canArray[3: 7], "little")
     print(CANIDs[canID], str(index), rawData) #will be replaced by writing to database
     '''
     bucket = "LHR"
@@ -88,8 +88,8 @@ async def CANparse(canArray):
 
 def handle_client(conn, addr):
     print(f"Connected by {addr}")
-    ethId = int.from_bytes(conn.recv(1), "big")
-    length = int.from_bytes(conn.recv(1), "big")
+    ethId = int.from_bytes(conn.recv(1), "little")
+    length = int.from_bytes(conn.recv(1), "little")
     
     #put CAN/IMU/GPS message into bytearray
     #necessary as recv might not always return the given bytes

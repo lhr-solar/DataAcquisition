@@ -114,8 +114,8 @@ def handle_client(conn, addr):
     query_api = client.query_api()
     print("query_api", flush=True)
     while(1):
-        ethId = int.from_bytes(conn.recv(1), "big")
-        length = int.from_bytes(conn.recv(1), "big")
+        ethId = int.from_bytes(conn.recv(1), "little")
+        length = int.from_bytes(conn.recv(1), "little")
 
         #put CAN/IMU/GPS message into bytearray
         #necessary as recv might not always return the given bytes
