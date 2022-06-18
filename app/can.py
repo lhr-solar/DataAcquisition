@@ -7,13 +7,13 @@ CANIDs = {
      0x002: "BPS Trip",
      0x101: "BPS All Clear",
      0x102: "BPS Contactor State",
-     0x103: "Current Data",
-     0x104: "Voltage Data Array",
-     0x105: "Temperature Data Array",
-     0x106: "State of Charge Data",
-     0x107: "WDog Triggered",
+     0x103: "BPS Current",
+     0x104: "BPS Voltage",
+     0x105: "BPS Temperature",
+     0x106: "State of Charge",
+     0x107: "BPS WDog State",
      0x108: "CAN Error",
-     0x109: "BPS Command msg",
+     0x109: "BPS Command MSG",
      0x10B: "Supplemental Voltage",
      0x10C: "Charging Enabled",
 
@@ -42,7 +42,7 @@ CANIDs = {
      0x615: "Sunscatter B Override Enabled/Disable command",
      0x616: "Sunscatter B Fault",
 
-     0x620: "Blackbody Measurement",
+     0x620: "Blackbody Measurement", #These aren't being used at the moment
      0x630: "Blackbody (Irradiance Sensor 1) Measurement",
      0x631: "Blackbody (Irradience Sensor 2) Measurement",
      0x632: "Blackbody (Irradience/RTD) Board Enabled/Disable command",

@@ -40,23 +40,21 @@ async def IMUparse(array):
     gyrz = int.from_bytes(gyrz, "little")
     #print(f"Gyrz: {gyrz}")
 
-    bucket = "LHR"
-    try:
-        r = []
+    r = []
 
-        a1 = Point("Accelerometer").field("x", accelx)
-        a2 = Point("Accelerometer").field("y", accely)
-        a3 = Point("Accelerometer").field("z", accelz)
-        r += [a1, a2, a3]
+    a1 = Point("Accelerometer").field("x", accelx)
+    a2 = Point("Accelerometer").field("y", accely)
+    a3 = Point("Accelerometer").field("z", accelz)
+    r += [a1, a2, a3]
 
-        m1 = Point("Magnetometer").field("x", magx)
-        m2 = Point("Magnetometer").field("y", magy)
-        m3 = Point("Magnetometer").field("z", magz)
-        r += [m1, m2, m3]
+    m1 = Point("Magnetometer").field("x", magx)
+    m2 = Point("Magnetometer").field("y", magy)
+    m3 = Point("Magnetometer").field("z", magz)
+    r += [m1, m2, m3]
 
-        g1 = Point("Gyroscope").field("x", gyrx)
-        g2 = Point("Gyroscope").field("y", gyry)
-        g3 = Point("Gyroscope").field("z", gyrz)
-        r += [g1, g2, g3]
+    g1 = Point("Gyroscope").field("x", gyrx)
+    g2 = Point("Gyroscope").field("y", gyry)
+    g3 = Point("Gyroscope").field("z", gyrz)
+    r += [g1, g2, g3]
 
-        return r
+    return r

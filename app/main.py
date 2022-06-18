@@ -22,7 +22,7 @@ import imu
 #s.connect(("8.8.8.8", 80))
 #print(s.getsockname()[0])
 #HOST = s.getsockname()[0]
-HOST = "0.0.0.0"
+HOST = "169.254.48.219" #This points to the host IP address
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 BYTE = 1
 FORMAT = 'utf-8'
@@ -59,9 +59,8 @@ async def tester():
         time.sleep(.2)
         
 
-def handle_client(conn, addr):
+def handle_client(conn):
 
-    print(f"Connected by {addr}")
     client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
     print("created client", flush=True)
     write_api = client.write_api(write_options=SYNCHRONOUS)
@@ -98,8 +97,10 @@ def start():
         s.listen()
         print(f"Server listening on {HOST}")
         conn, addr = s.accept()
+        print(f"Connected by {addr}")
         with conn:
-            handle_client(conn, addr)
+            tester()
+            #handle_client(conn, addr)
 """
 app = FastAPI()
 

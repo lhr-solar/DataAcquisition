@@ -38,7 +38,7 @@ services:
     env_file:
       - .env
     ports:
-      - 65432:65432
+      - 169.254.48.219:65432:65432 #This is the IP address that the Telemetry system connects to
     volumes: 
       - ./app:/lhr-pi/app
     depends_on:
@@ -55,20 +55,20 @@ services:
       - ./nginx_templates:/etc/nginx/templates
     depends_on:
       - app
-  hostapd:
-    container_name: hostapd
-    image: sdelrio/rpi-hostap:latest
-    restart: unless-stopped
-    privileged: true
-    network_mode: "host"
-    environment:
-      - INTERFACE=wlan0
-      - CHANNEL=6
-      - SSID=lhrpi
-      - AP_ADDR=198.168.254.1
-      - SUBNET=198.168.254.0
-      - WPA_PASSPHRASE=password
-      - OUTGOINGS=docker0
+  # hostapd:
+  #   container_name: hostapd
+  #   image: sdelrio/rpi-hostap:latest
+  #   restart: unless-stopped
+  #   privileged: true
+  #   network_mode: "host"
+  #   environment:
+  #     - INTERFACE=wlan0
+  #     - CHANNEL=6
+  #     - SSID=lhrpi
+  #     - AP_ADDR=198.168.254.1
+  #     - SUBNET=198.168.254.0
+  #     - WPA_PASSPHRASE=password
+  #     - OUTGOINGS=docker0
 volumes: 
   influxdb:
   grafana_storage:
