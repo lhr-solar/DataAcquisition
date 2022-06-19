@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -12,17 +7,13 @@ import time
 import random
 import socket
 import os
+import logging
 
 import can
 import gps
 import imu
 
-#HOST = socket.gethostbyname(socket.gethostname())
-#s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-#s.connect(("8.8.8.8", 80))
-#print(s.getsockname()[0])
-#HOST = s.getsockname()[0]
-HOST = "169.254.48.219" #This points to the host IP address
+HOST = '' #This listens to every interface
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 BYTE = 1
 FORMAT = 'utf-8'
@@ -58,17 +49,37 @@ async def tester():
             pass
         time.sleep(.2)
         
+def connect_socket(s):
 
-def handle_client(conn):
+    logging.debug(f"Server listening on {HOST}")
+    s.listen(1)
+    (conn, addr) = s.accept()
+    logging.debug(f"Server accepted {addr}")
+    return conn
+
+def main():
+    logging.basicConfig(level=logging.DEBUG)
+
+    logging.debug("Server starting...")
+    s = socket.create_server(address=(HOST, PORT), family=socket.AF_INET)
+    s.setblocking(True)
+    logging.debug(f"Server listening on {HOST}")
+    s.listen(1)
+    (conn, addr) = s.accept()
+    logging.debug(f"Server accepted {addr}")
 
     client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
-    print("created client", flush=True)
-    write_api = client.write_api(write_options=SYNCHRONOUS)
-    print("write_api", flush=True)
+    logging.debug("created client")
+    write_api = client.write_api(write_options=SYNCHRONOUS)    
+
+    buf = bytearray(2)
 
     while(1):
-        ethId = int.from_bytes(conn.recv(1), "little")
-        length = int.from_bytes(conn.recv(1), "little")
+        if (conn.recv_into(buf, 2) == 0):
+            logging.warning("Server Disconnected")
+            conn = connect_socket(s)
+        ethId = int.from_bytes([buf[0]], "little")
+        length = int.from_bytes([buf[1]], "little")
         #put CAN/IMU/GPS message into bytearray
         #necessary as recv might not always return the given bytes
         array = []
@@ -77,46 +88,15 @@ def handle_client(conn):
             received = bytearray(conn.recv(i))
             array += received
             i -= len(received)
-
+        
         if ethId == 1:
-            print(f"ID: IMU")
             r = imu.IMUparse(array)
         elif ethId == 2:
-            print(f"ID: GPS")
             r = gps.GPSparse(array)
-        elif ethId == 3:
-            print(f"ID: CAN")
+        if ethId == 3:
             r = can.CANparse(array)
-
+        
         write_api.write(bucket="LHR", record=r)
 
-def start():
-    print("Server starting...", flush=True)
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((HOST, PORT))
-        s.listen()
-        print(f"Server listening on {HOST}")
-        conn, addr = s.accept()
-        print(f"Connected by {addr}")
-        with conn:
-            tester()
-            #handle_client(conn, addr)
-"""
-app = FastAPI()
-
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-templates = Jinja2Templates(directory="app/templates")
-
-@app.on_event("startup")
-async def on_startup():
-    #asyncio.create_task(tester()) 
-    asyncio.create_task(start())
-
-
-@app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
-    ip = os.environ.get("PI_IP")
-    return templates.TemplateResponse("index.html", {"request": request, "ip": ip})
-"""
-
-start()
+if __name__ == "__main__":
+    main()

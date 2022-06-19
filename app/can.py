@@ -1,7 +1,5 @@
-from influxdb_client import InfluxDBClient, Point
+from influxdb_client import Point
 from influxdb_client.client.write_api import SYNCHRONOUS
-import asyncio
-import os
 
 CANIDs = {
      0x002: "BPS Trip",
@@ -50,14 +48,12 @@ CANIDs = {
      0x640: "PV Curve Tracer Profile",
 }
 
-async def CANparse(canArray):
-    canID = int.from_bytes(canArray[0:2], "little")
-    index = int.from_bytes(canArray[2:3], "little")
-    rawData = int.from_bytes(canArray[3: 7], "little")
+def CANparse(canArray):
+    canID = int.from_bytes(canArray[0:4], "little")
+    index = int.from_bytes(canArray[4:8], "little")
+    rawData = int.from_bytes(canArray[8:12], "little")
     print(CANIDs[canID], str(index), rawData) #will be replaced by writing to database
 
-    r = []
-    a1 = Point(CANIDs[canID]).field(index, rawData)
-    r += a1
+    r = Point(CANIDs[canID]).field("index", index).field("Data", rawData)
     
     return r
