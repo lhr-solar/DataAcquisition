@@ -34,10 +34,10 @@ def IMUparse(array):
 
     r = []
 
-    # a1 = Point("Accelerometer").field("x", accelx)
-    # a2 = Point("Accelerometer").field("y", accely)
-    # a3 = Point("Accelerometer").field("z", accelz)
-    # r += [a1, a2, a3]
+    a1 = Point("Accelerometer").field("x", accelx)
+    a2 = Point("Accelerometer").field("y", accely)
+    a3 = Point("Accelerometer").field("z", accelz)
+    r += [a1, a2, a3]
 
     m1 = Point("Magnetometer").field("x", magx)
     m2 = Point("Magnetometer").field("y", magy)
