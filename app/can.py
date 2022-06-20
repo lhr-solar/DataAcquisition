@@ -1,7 +1,7 @@
 import struct
 from functools import partial
 import logging
-from influxdb_client import Point
+#from influxdb_client import Point
 
 def float_func(load):
     return 0, struct.unpack('f', load[0:4]), 0
@@ -69,8 +69,10 @@ CANIDs = {
 }
 
 def CANparse(data):
+    logging.basicConfig(level=logging.DEBUG)
+    logging.debug(data)
     canID = int.from_bytes(data[0:4], "little")
-    index, Data = CANIDs[canID][-1](data[4:12])
-    logging.debug(CANIDs[canID], index, Data)
+    index, Data = CANIDs[canID][-1](load = data[4:12])
+    logging.debug(CANIDs[canID][0], index, Data)
 
-    return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], Data[i]) for i in [1,2]] if (CANIDs[canID[-1]] == two_word_func) else Point(CANIDs[canID][0]).field(index, Data)
+    #return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], Data[i]) for i in [1,2]] if (CANIDs[canID[-1]] == two_word_func) else Point(CANIDs[canID][0]).field(index, Data)
