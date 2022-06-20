@@ -5,16 +5,13 @@ import logging
 def GPSparse(data):
 
     logging.debug(data)
-    
-    r = []
 
-    g3 = Point("GPS").field("Status", data[9])
-    g4 = Point("GPS").field("Latitute", data[10:18])
-    g6 = Point("GPS").field("NorthSouth", data[18])
-    g7 = Point("GPS").field("Longitude", data[19:28])  #may need to reverse all lists since little endian
-    g9 = Point("GPS").field("EastWest", data[29])
-    g10 = Point("GPS").field("MPH", str(ord(data[30]) + (int(data[32:30:-1]) / 100)  * 1.15078)) #convert knots in char to mph in char
-    
-    r += [g3, g4, g6, g7, g9, g10]
-        
-    return r
+    gps = [ ["Status",      data[9]]
+            ["Latitude",    float(data[10:11]) + float(data[11:18])/600000] 
+            ["NorthSouth",  data[18]] 
+            ["Longitude",   float(data[19:22]) + float(data[22:28])/600000]
+            ["EastWest",    data[29]]
+            ["MPH",         float(data[30:33]) * 1.15078]
+    ]
+            
+    return [Point("GPS").field((gps[i][0], gps[i][1]) for i in gps)]
