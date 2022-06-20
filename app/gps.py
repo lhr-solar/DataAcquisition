@@ -1,5 +1,4 @@
 from influxdb_client import Point
-from influxdb_client.client.write_api import SYNCHRONOUS
 import logging
 
 def GPSparse(data):
@@ -13,5 +12,5 @@ def GPSparse(data):
             ["EastWest",    data[29]]
             ["MPH",         float(data[30:33]) * 1.15078]
     ]
-            
+
     return [Point("GPS").field((gps[i][0], gps[i][1]) for i in gps)]
