@@ -73,4 +73,4 @@ def CANparse(data):
     index, Data = CANIDs[canID][-1](data[4:12])
     logging.debug(CANIDs[canID], index, Data)
 
-    return Point(CANIDs[canID][0]).field((CANIDs[canID][i], Data[i]) for i in range(1:3) if (CANIDs[canID[-1]] == two_word_func) else (index, Data))
+    return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], Data[i]) for i in [1,2]] if (CANIDs[canID[-1]] == two_word_func) else Point(CANIDs[canID][0]).field(index, Data)

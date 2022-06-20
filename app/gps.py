@@ -13,4 +13,4 @@ def GPSparse(data):
             ["MPH",         float(data[30:33]) * 1.15078]
     ]
 
-    return [Point("GPS").field((gps[i][0], gps[i][1]) for i in gps)]
+    return [Point("GPS").field(gps[i][0], gps[i][1]) for i in gps]
