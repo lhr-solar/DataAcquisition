@@ -3,16 +3,16 @@ import logging
 from influxdb_client import Point
 
 def float_func(load):
-    return [0, struct.unpack('<f', load[4:8])[0], 0]
+    return struct.unpack('<If', load[0:8]) + (0,)
 
 def unsigned_func(load):
-    return [0, struct.unpack('<Q', load)[4:], 0]
+    return struct.unpack('<IQ', load[0:12]) + (0,)
 
 def two_word_func(load):
-    return [0, struct.unpack('<I', load[4:8])[0], struct.unpack('<I', load[8:12])[0]]
+    return struct.unpack('<III', load[0:12])
 
 def index_func(load):
-    return [struct.unpack('<I', load[0:4])[0], struct.unpack('<I', load[4:12])[0], 0]
+    return struct.unpack('<II', load[0:8]) + (0,)
 
 CANIDs = {
     0x001: ["Dash Kill Switch",                                 unsigned_func],
@@ -70,7 +70,8 @@ CANIDs = {
 def CANparse(data):
     canID = int.from_bytes(data[0:4], "little")
     logging.debug(CANIDs[canID][0])
-    packet = CANIDs[canID][-1](data[4:15])
+    logging.debug(data[4:15])
+    packet = CANIDs[canID][-1](data[4:16])
     logging.debug(packet)
 
     return (Point(CANIDs[canID][0]).field(packet[0], packet[1]) 
