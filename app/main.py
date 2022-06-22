@@ -82,7 +82,7 @@ def main():
         length = int.from_bytes([buf[1]], "little")
         #put CAN/IMU/GPS message into bytearray
         #necessary as recv might not always return the given bytes
-        received = bytearray()
+        received = bytearray()  
         i = length
         while(i > 0):
             received += bytearray(conn.recv(i))
@@ -93,7 +93,6 @@ def main():
         elif ethId == 2:
             r = gps.GPSparse(received)
         if ethId == 3:
-            logging.debug(bytes(received[10]))
             r = can.CANparse(received)
         
         write_api.write(bucket="LHR", record=r)

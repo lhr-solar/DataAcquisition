@@ -4,8 +4,7 @@ import logging
 def GPSparse(data):
 
     data = ['0' if i == 0 else chr(i) for i in data]
-
-    logging.debug(data)
+    #logging.debug(data)
 
     gps = { 'Status':      lambda i: i[9],
             'lat':    lambda i: (float(i[10:12]) + float(i[12:18])/600000) * (-1 if i[28] == 'W' else 1), 
