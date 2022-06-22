@@ -69,14 +69,12 @@ CANIDs = {
 
 def CANparse(data):
     canID = int.from_bytes(data[0:4], "little")
-    logging.debug(CANIDs[canID][0])
-    logging.debug(data[4:15])
     packet = CANIDs[canID][-1](data[4:16])
-    logging.debug(packet)
+    logging.debug(CANIDs[canID][0], packet)
 
-    return (Point(CANIDs[canID][0]).field(packet[0], packet[1]) 
+    return (Point(CANIDs[canID][0]).field(packet[0], packet[1]) #return just index and data
             if (packet[2] == 0) 
             else 
-                [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i])
+                [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
                 for i in [1,2]] 
             )

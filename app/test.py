@@ -50,10 +50,20 @@ CAN_Test_Data = [
     [0x00, 0x00, 0x06, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01] #Sunscatter B fault enabled
 ]
 
+GPS_Test_Data = ["064951000A2307.1256N12016.4438E0.03165.482604063.05W"]
+
+IMU_Test_Data = [""]
+
 def can_test():
-    logging.basicConfig(level=logging.DEBUG)
     #This sends everything in little endian
     for i in CAN_Test_Data: can.CANparse(bytearray(i[3::-1] + i[7:3:-1] + i[16:7:-1])) 
 
+def gps_test():
+    gps.GPSparse(GPS_Test_Data)
+
+def imu_test():
+    pass
+
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     can_test()

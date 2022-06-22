@@ -2,9 +2,6 @@
 
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
-
-import time
-import random
 import socket
 import os
 import logging
@@ -12,42 +9,10 @@ import logging
 import can
 import gps
 import imu
+import test
 
 HOST = '' #This listens to every interface
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
-BYTE = 1
-FORMAT = 'utf-8'
-DISCONNECT_MESSAGE = "DISCONNECT"
-
-async def tester():
-    bucket = "LHR"
-
-    client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
-    write_api = client.write_api(write_options=SYNCHRONOUS)
-
-    while True:
-        try:
-            r = []
-
-            t1 = Point("Temperature").field("Object 1", (random.randrange(0, 100) / 100) * 30 + 30)
-            t2 = Point("Temperature").field("Object 2", (random.randrange(0, 100) / 100) * 30 + 30)
-            r += [t1, t2]
-
-            sv = Point("Voltage").field("Supplemental", (random.randrange(0, 100) / 100) * 9 + 6)
-            v1 =  Point("Voltage").field("Object 1", (random.randrange(0, 100) / 100) * 9 + 6)
-            v2 =  Point("Voltage").field("Object 2", (random.randrange(0, 100) / 100) * 9 + 6)
-            r += [sv, v1, v2]
-
-            b = Point("State of Charge").field("Battery", random.randrange(0, 100) / 100 * 100)
-            r += [b]
-
-            c = Point("Current").field("Car", random.randrange(-20000, 55000))
-            r += [c]
-
-            write_api.write(bucket=bucket, record=r)
-        except Exception:
-            pass
-        time.sleep(.2)
         
 def connect_socket(s):
 
