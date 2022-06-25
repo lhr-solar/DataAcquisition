@@ -6,6 +6,7 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 import socket
 import os
 import logging
+import csv
 
 import can
 import gps
@@ -17,6 +18,8 @@ PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 IMU_ID = 1
 GPS_ID = 2
 CAN_ID = 3
+LOGGING = 0
+
 s = socket.create_server(address=(HOST, PORT), family=socket.AF_INET)
 
 def connect_socket():
@@ -53,7 +56,7 @@ def receiver():
         while(i > 0):
             r += bytearray(conn.recv(i))
             i -= len(r)
-        write_api.write(bucket="LHR", record=parser[ethId](r))
+        write_api.write(bucket="LHR", record=parser[ethId](r)(LOGGING))
         
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

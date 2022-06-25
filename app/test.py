@@ -64,7 +64,7 @@ IMU_Test_Data = [
 
 def can_test():
     #This sends everything in little endian
-    for i in CAN_Test_Data: return can.CANparse(bytearray(i[3::-1] + i[7:3:-1] + i[16:7:-1])) 
+    for i in CAN_Test_Data: return can.CANparse(bytearray(i[3::-1] + i[7:3:-1] + i[16:7:-1]), 1) 
 
 def gps_test():
     gps.GPSparse(GPS_Test_Data)
@@ -74,8 +74,7 @@ def imu_test():
 
 #This is the only function that should be called outside of this file. Other functions will be called within this function
 def main_test():
-    client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
-    logging.debug("created client")
-    write_api = client.write_api(write_options=SYNCHRONOUS)
-    r = can_test()
-    write_api.write(bucket="LHR", record=r)
+    can_test()
+
+if __name__ == '__main__':
+    main_test()

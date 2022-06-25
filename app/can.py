@@ -1,6 +1,11 @@
 import struct
 import logging
 from influxdb_client import Point
+import pandas
+import os
+import time
+
+output_path = 'CAN.csv'
 
 def float_func(load):
     return struct.unpack('<If', load[0:8]) + (0,)
@@ -67,12 +72,21 @@ CANIDs = {
     0x640: ["PV Curve Tracer Profile",                          unsigned_func]
 }
 
-def CANparse(data):
-    logging.debug(data)
+def CANparse(data, LOGGING):
     canID = int.from_bytes(data[0:4], "little")
     packet = CANIDs[canID][-1](data[4:16])
-    logging.debug(CANIDs[canID][0])
-    logging.debug(packet[1])
+
+    parsed = {
+        "Time": time.time(),
+        'CAN ID': CANIDs[canID][0],
+        'IDX': packet[0],
+        'DATA1': packet[1],
+        'DATA2': packet[2]
+    }
+
+    if LOGGING:
+        pandas.DataFrame([parsed])
+        pandas.DataFrame.to_csv(output_path, mode='a', header=not os.path.exists(output_path))
 
     return (Point(CANIDs[canID][0]).field(packet[0], packet[1]) #return just index and data
             if (packet[2] == 0) 
