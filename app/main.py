@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from distutils.log import debug
-from xmlrpc.client import Server
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 import socket
@@ -32,7 +30,6 @@ def connect_socket(s: socket) -> socket:
 def reconnect_socket(server: socket, conn: socket) -> socket:
     
     logging.warning("Server Disconnected")
-    conn.shutdown(socket.SHUT_RDWR)
     conn.close()
     return connect_socket(server)
 
@@ -73,7 +70,7 @@ def receiver():
                 r[i:recv_len+i] = buf[:recv_len]
                 i += recv_len
             
-            write_api.write(bucket="LHR", record=parser[ethID](r)(LOGGING))
+            write_api.write(bucket="LHR", record=parser[ethID](r, LOGGING))
         except ServerDisconnectError:
             conn = reconnect_socket(s, conn)
 
