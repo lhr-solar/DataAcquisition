@@ -24,5 +24,11 @@ def IMUparse(input, LOGGING):
         pandas.DataFrame([parsed])
         pandas.DataFrame.to_csv(output_path, mode='a', header=not os.path.exists(output_path))
 
+    """
+    TODO: IMU parsing is broken - 'parsed[i]' in the list comprehension tries to index an int 
+        as the key to a dict 'parsed'. :^(
+    """
+
+
     #return [Point(parsed.keys()[i]).field(parsed[i].keys()[j], parsed[i][j]) for i in parsed for j in ]
     return [Point(data[math.floor(i/3)]).field(data_field[i%3], parsed[i]) for i in range(0,9)]
