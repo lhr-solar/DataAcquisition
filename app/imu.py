@@ -1,15 +1,11 @@
 from influxdb_client import Point
 from influxdb_client.client.write_api import SYNCHRONOUS
-import os
-import time
 import logging
-import sys
-import csv
+import math
 
-def IMUparse(input: bytearray):
+def IMUparse(input):
+    #logging.debug(input)
+    data = ["Accelerometer", "Magnetometer", "Gyroscope"]
+    data_field = ['x', 'y', 'z']
 
-    points = [(i, j) for i in ('Accelerometer', 'Magnetometer', 'Gyroscope') for j in 'xyz']
-    parsed = [int.from_bytes(input[2*i:2*i+2], 'little') for i in range(9)]
-    parsed += time.time()
-
-    return [Point(points[i][0]).field(points[i][1], parsed[i]) for i in range(len(parsed)-1)]
+    return [Point(data[math.floor(i/3)]).field(data_field[i%3], int.from_bytes(input[(i*2):((i*2)+2)], "little")) for i in range(0,9)]

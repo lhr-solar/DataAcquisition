@@ -5,7 +5,6 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 import socket
 import os
 import logging
-import csv
 
 import can
 import gps
@@ -17,7 +16,6 @@ PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 IMU_ID = 1
 GPS_ID = 2
 CAN_ID = 3
-LOGGING = False
 
 def connect_socket(s: socket) -> socket:
 
@@ -70,7 +68,7 @@ def receiver():
                 r[i:recv_len+i] = buf[:recv_len]
                 i += recv_len
             
-            write_api.write(bucket="LHR", record=parser[ethID](r, LOGGING))
+            write_api.write(bucket="LHR", record=parser[ethID](r))
         except ServerDisconnectError:
             conn = reconnect_socket(s, conn)
 
