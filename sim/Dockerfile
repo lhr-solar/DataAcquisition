@@ -8,7 +8,7 @@ RUN apt-get install -y gcc
 RUN mkdir /telemetry
 COPY src /telemetry/src
 WORKDIR /telemetry
-EXPOSE 65432
+EXPOSE 65433
 
 CMD [ "python3", "-u", "src/main.py" ]
 
