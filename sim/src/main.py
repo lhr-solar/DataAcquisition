@@ -65,16 +65,18 @@ def sender():
     s.connect((HOST, PORT))
     logging.debug("Client starting...")
     s.setblocking(True)
-    eth_header = [0x03, 0x10]
+    eth_header_CAN = [0x03, 0x10]
+    eth_header_GPS = [0x02, len(GPS_Test_Data)]
 
-    for i in CAN_Test_Data: 
-        s.send(bytearray(eth_header + i) )
-    logging.debug("CAN sent.")
-    # s.sendall(GPS_Test_Data.encode())
-    # logging.debug("GPS sent.")
+    # for i in CAN_Test_Data: 
+    #     s.send(bytearray(eth_header_CAN + i) )
+    # logging.debug("CAN sent.")
+    s.sendall(bytearray(eth_header_GPS) + GPS_Test_Data.encode())
+    logging.debug("GPS sent.")
     # for i in IMU_Test_Data:
     #     s.sendall(i)
     # logging.debug("IMU sent.")
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     sender()
