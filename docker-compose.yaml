@@ -23,9 +23,9 @@ services:
       - .env
     ports:
       - 65432:65432 #This is the IP address that the telemetry system connects to
-    networks:
-      vpcbr:
-        ipv4_address: 10.5.0.5
+    # networks:
+    #   vpcbr:
+    #     ipv4_address: 10.5.0.5
     volumes: 
       - ./app:/lhr-pi/app
     depends_on:
@@ -40,9 +40,9 @@ services:
     restart: always
     ports:
       - 65433:65433
-    networks:
-      vpcbr:
-        ipv4_address: 10.5.0.6
+    # networks:
+    #   vpcbr:
+    #     ipv4_address: 10.5.0.6
     volumes: 
       - ./sim/src:/telemetry/src
     depends_on:
@@ -61,10 +61,10 @@ services:
       - app
 volumes: 
   influxdb:
-networks:
-  vpcbr:
-    driver: bridge
-    ipam:
-     config:
-       - subnet: 10.5.0.0/16
-         gateway: 10.5.0.1
+# networks:
+#   vpcbr:
+#     driver: bridge
+#     ipam:
+#      config:
+#        - subnet: 10.5.0.0/16
+#          gateway: 10.5.0.1

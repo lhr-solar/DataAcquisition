@@ -6,6 +6,8 @@ RUN apt-get update
 RUN apt-get install -y gcc
 
 RUN mkdir /telemetry
+COPY requirements.txt /telemetry
+RUN pip3 install --no-cache-dir --upgrade -r /telemetry/requirements.txt
 COPY src /telemetry/src
 WORKDIR /telemetry
 EXPOSE 65433
