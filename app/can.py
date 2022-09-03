@@ -68,7 +68,7 @@ CANIDs = {
 }
 
 def CANparse(data):
-    logging.debug(data)
+    # logging.debug(data)
     canID = int.from_bytes(data[0:4], "little")
     #canID = int.from_bytes(data[0:4], "big")
     logging.debug(canID)
