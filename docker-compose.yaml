@@ -9,6 +9,7 @@ services:
     restart: always
     volumes:
       - influxdb:/var/lib/influxdb2
+      - ./influx_config:/usr/share/chronograf/resources
     ports:
       - 8086:8086
   app:

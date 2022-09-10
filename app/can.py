@@ -70,7 +70,6 @@ CANIDs = {
 def CANparse(data):
     logging.debug(data)
     canID = int.from_bytes(data[0:4], "little")
-    #canID = int.from_bytes(data[0:4], "big")
     logging.debug(canID)
     packet = CANIDs[canID][-1](data[4:])
     logging.debug(CANIDs[canID][0])
