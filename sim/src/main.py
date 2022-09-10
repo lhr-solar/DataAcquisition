@@ -72,27 +72,15 @@ def sender():
     eth_header_GPS = [0x02, len(GPS_Test_Data)]
     eth_header_IMU = [0x01, 0x12]
 
-<<<<<<< HEAD
-    for i in CAN_Test_Data: 
-        s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]) )
-    logging.debug("CAN sent.")
-    s.sendall(bytearray(eth_header_GPS) + GPS_Test_Data.encode())
-    logging.debug("GPS sent.")
-    for i in IMU_Test_Data:
-        s.sendall(bytearray(eth_header_IMU) + i)
-    logging.debug("IMU sent.")
-=======
     while True:
         for i in CAN_Test_Data: 
-            #s.send(bytearray(eth_header_CAN + i) )
             s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]) )
-        # logging.debug("CAN sent.")
+        logging.debug("CAN sent.")
         s.sendall(bytearray(eth_header_GPS) + GPS_Test_Data.encode())
-        # logging.debug("GPS sent.")
+        logging.debug("GPS sent.")
         for i in IMU_Test_Data:
             s.sendall(bytearray(eth_header_IMU) + i)
-        # logging.debug("IMU sent.")
->>>>>>> c0d6a1f7c3ea7ab0d23ffa4f1b4470c3096a8309
+        logging.debug("IMU sent.")
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)

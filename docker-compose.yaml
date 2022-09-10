@@ -9,9 +9,24 @@ services:
     restart: always
     volumes:
       - influxdb:/var/lib/influxdb2
-      - ./influx_config:/usr/share/chronograf/resources
     ports:
       - 8086:8086
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - grafana_storage:/var/lib/grafana
+      - ./grafana_config/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana_config/influxdb.yaml:/etc/grafana/provisioning/datasources/influxdb.yaml
+      - ./grafana_config/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+      - ./grafana_config/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - 3000:3000
+    depends_on:
+      - influxdb
   app:
     container_name: app
     image: dataacquisition_app:latest
@@ -62,6 +77,7 @@ services:
       - app
 volumes: 
   influxdb:
+  grafana_storage:
 # networks:
 #   vpcbr:
 #     driver: bridge
