@@ -2,7 +2,6 @@ import logging
 import socket
 
 #All Data is little endian (smallest index of each field has LSB)
-#Should be sent in this format: for i in CAN_Test_Data: return can.CANparse(bytearray(i[3::-1] + i[7:3:-1] + i[16:7:-1]), 1)
 CAN_Test_Data = [
 #   |         CAN ID       |          IDX          |                     DATA                      |
     [0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01], #Dash Kill Switch On
@@ -49,8 +48,6 @@ CAN_Test_Data = [
     [0x00, 0x00, 0x06, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01] #Sunscatter B fault enabled
 ]
 
-#                          1         2         3         4         5
-#                0123456789012345678901234567890123456789012345678901
 GPS_Test_Data = "064951000A2307.1256N12016.4438E0.03165.482604063.05W"
 
 IMU_Test_Data = [
@@ -68,21 +65,16 @@ def sender():
     s.connect((HOST, PORT))
     logging.debug("Client starting...")
     s.setblocking(True)
-    eth_header_CAN = [0x03, 0x10]
-    eth_header_GPS = [0x02, len(GPS_Test_Data)]
-    eth_header_IMU = [0x01, 0x12]
+    eth_header = [0x03, 0x10]
 
-    while True:
-        for i in CAN_Test_Data: 
-            #s.send(bytearray(eth_header_CAN + i) )
-            s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]) )
-        # logging.debug("CAN sent.")
-        s.sendall(bytearray(eth_header_GPS) + GPS_Test_Data.encode())
-        # logging.debug("GPS sent.")
-        for i in IMU_Test_Data:
-            s.sendall(bytearray(eth_header_IMU) + i)
-        # logging.debug("IMU sent.")
+    for i in CAN_Test_Data: 
+        s.send(bytearray(eth_header + i) )
+    logging.debug("CAN sent.")
+    # s.sendall(GPS_Test_Data.encode())
+    # logging.debug("GPS sent.")
+    # for i in IMU_Test_Data:
+    #     s.sendall(i)
+    # logging.debug("IMU sent.")
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
     sender()
