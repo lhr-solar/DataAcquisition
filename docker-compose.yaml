@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb:latest
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - influxdb:/var/lib/influxdb2
+    ports:
+      - 8086:8086
+  app:
+    container_name: app
+    image: dataacquisition_app:latest
+    build:
+      context: .
+      args:
+        reload: 1
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 169.254.48.219:65432:65432 #This is the IP address that the Telemetry system connects to
+    volumes: 
+      - ./app:/lhr-pi/app
+    depends_on:
+      - influxdb
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: unless-stopped 
+    env_file:
+      - .env
+    ports: 
+      - 80:80
+    volumes:
+      - ./nginx_templates:/etc/nginx/templates
+    depends_on:
+      - app
+volumes: 
+  influxdb:
