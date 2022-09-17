@@ -26,13 +26,164 @@
   "liveNow": false,
   "panels": [
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
+      },
+      "id": 39,
+      "panels": [],
+      "title": "Car Status",
+      "type": "row"
+    },
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "transparent",
+            "mode": "fixed"
+          },
+          "displayName": "${__series.name}",
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "green",
+                  "index": 0
+                },
+                "1": {
+                  "color": "red",
+                  "index": 1
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bool_yes_no"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 41,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "pluginVersion": "8.2.1",
+      "targets": [
+        {
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Dash Kill Switch\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"BPS Trip\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "B"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Any System Failures\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "C"
+        },
+        {
+          "hide": false,
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Any System Shutoff\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "D"
+        }
+      ],
+      "title": "Status",
+      "transformations": [],
+      "type": "bargauge"
+    },
+    {
+      "datasource": "InfluxDB",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-RdYlGr"
+          },
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 43,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.2.1",
+      "targets": [
+        {
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Ignition\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Ignition",
+      "type": "gauge"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
       },
       "id": 35,
       "panels": [
@@ -431,7 +582,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 9
       },
       "id": 4,
       "panels": [
@@ -692,7 +843,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 2
+        "y": 10
       },
       "id": 16,
       "panels": [
@@ -969,380 +1120,382 @@
       "type": "row"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 11
       },
       "id": 33,
-      "panels": [],
-      "title": "Sunscatter",
-      "type": "row"
-    },
-    {
-      "datasource": "InfluxDB",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "transparent",
-            "mode": "fixed"
+      "panels": [
+        {
+          "datasource": "InfluxDB",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "transparent",
+                "mode": "fixed"
+              },
+              "displayName": "${__series.name}",
+              "mappings": [
+                {
+                  "options": {
+                    "0": {
+                      "color": "green",
+                      "index": 0
+                    },
+                    "1": {
+                      "color": "red",
+                      "index": 1
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "bool_yes_no"
+            },
+            "overrides": []
           },
-          "mappings": [
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 5
+          },
+          "id": 37,
+          "options": {
+            "displayMode": "gradient",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "text": {}
+          },
+          "pluginVersion": "8.2.1",
+          "targets": [
             {
-              "options": {
-                "0": {
-                  "color": "green",
-                  "index": 0
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Fault\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "A"
+            },
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Override command\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "B"
+            },
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Fault\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "C"
+            },
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Override command\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "D"
+            }
+          ],
+          "title": "Sunscatter Status",
+          "transformations": [],
+          "type": "bargauge"
+        },
+        {
+          "datasource": "InfluxDB",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "left",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
                 },
-                "1": {
-                  "color": "red",
-                  "index": 1
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
                 }
               },
-              "type": "value"
+              "mappings": [],
+              "max": 0.5,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "amp"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 5
+          },
+          "id": 27,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Array Voltage Setpoint\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "A"
+            },
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Array Voltage Setpoint\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "B"
             }
           ],
-          "max": 1,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bool_yes_no"
+          "title": "Sunscatter Array Voltage Setpoint",
+          "type": "timeseries"
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 4
-      },
-      "id": 37,
-      "options": {
-        "displayMode": "gradient",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
+        {
+          "datasource": "InfluxDB",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "amp"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 12
+          },
+          "id": 31,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Array Current Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "A"
+            },
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Battery Current Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "B"
+            },
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Array Current Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "C"
+            },
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Battery Current Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "D"
+            }
           ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true,
-        "text": {}
-      },
-      "pluginVersion": "8.2.1",
-      "targets": [
-        {
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Fault\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "A"
+          "title": "Sunscatter Current Measurement",
+          "type": "timeseries"
         },
         {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Override command\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "B"
-        },
-        {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Fault\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "C"
-        },
-        {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Override command\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "D"
-        }
-      ],
-      "title": "Sunscatter Status",
-      "transformations": [],
-      "type": "bargauge"
-    },
-    {
-      "datasource": "InfluxDB",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
+          "datasource": "InfluxDB",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "volt"
+            },
+            "overrides": []
           },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 12
+          },
+          "id": 29,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
             },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
+            "tooltip": {
+              "mode": "single"
             }
           },
-          "mappings": [],
-          "max": 0.5,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "amp"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 4
-      },
-      "id": 27,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "targets": [
-        {
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Array Voltage Setpoint\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        },
-        {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Array Voltage Setpoint\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "B"
-        }
-      ],
-      "title": "Sunscatter Array Voltage Setpoint",
-      "type": "timeseries"
-    },
-    {
-      "datasource": "InfluxDB",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
+          "targets": [
+            {
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Array Voltage Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "A"
             },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Battery Voltage Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "B"
             },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Array Voltage Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "C"
             },
-            "thresholdsStyle": {
-              "mode": "off"
+            {
+              "hide": false,
+              "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Battery Voltage Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+              "refId": "D"
             }
-          },
-          "mappings": [],
-          "max": 1,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "amp"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 12
-      },
-      "id": 31,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "targets": [
-        {
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Array Current Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        },
-        {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Battery Current Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "B"
-        },
-        {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Array Current Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "C"
-        },
-        {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Battery Current Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "D"
+          ],
+          "title": "Sunscatter Voltage Measurement",
+          "type": "timeseries"
         }
       ],
-      "title": "Sunscatter Current Measurement",
-      "type": "timeseries"
-    },
-    {
-      "datasource": "InfluxDB",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "max": 1,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "volt"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 8,
-        "y": 12
-      },
-      "id": 29,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "targets": [
-        {
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Array Voltage Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        },
-        {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter A Battery Voltage Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "B"
-        },
-        {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Array Voltage Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "C"
-        },
-        {
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sunscatter B Battery Voltage Measurement\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"0\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "D"
-        }
-      ],
-      "title": "Sunscatter Voltage Measurement",
-      "type": "timeseries"
+      "title": "Sunscatter",
+      "type": "row"
     }
   ],
   "refresh": "500ms",
@@ -1376,5 +1529,5 @@
   "timezone": "",
   "title": "BPS - Longhorn Racing",
   "uid": "RcFrQLv7k",
-  "version": 2
+  "version": 3
 }
