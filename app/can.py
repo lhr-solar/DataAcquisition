@@ -30,7 +30,7 @@ CANIDs = {
     0x107: ["WDog Triggered",                                   unsigned_func],
     0x108: ["CAN Error",                                        unsigned_func],
     0x109: ["BPS Command msg",                                  unsigned_func],
-    0x10B: ["Supplemental Voltage",                             unsigned_func], #---
+    0x10B: ["Supplemental Voltage",                             unsigned_func],
     0x10C: ["Charging Enabled",                                 unsigned_func],
 
     0x580: ["Car State",                                        unsigned_func],
@@ -44,7 +44,7 @@ CANIDs = {
     0x24E: ["Odometer & Bus Amp Hours", "Charge", "Distance",   two_word_func],
     0x24F: ["Array Contactor State Change",                     unsigned_func],
 
-    0x600: ["Sunscatter A Array Voltage Setpoint",              float_func], #---
+    0x600: ["Sunscatter A Array Voltage Setpoint",              float_func],
     0x601: ["Sunscatter A Array Voltage Measurement",           float_func],
     0x602: ["Sunscatter A Array Current Measurement",           float_func],
     0x603: ["Sunscatter A Battery Voltage Measurement",         float_func],
