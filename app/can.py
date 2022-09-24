@@ -32,10 +32,10 @@ CANIDs = {
 
     0x101: ["BPS All Clear",                                    unsigned_func],
     0x102: ["BPS Contactor State",                              unsigned_func],
-    0x103: ["Current Data",                                     signed_func],      
+    0x103: ["Current Data",                                     signed_func],       #used to be unsigned
     0x104: ["Voltage Data Array",                               index_func],
     0x105: ["Temperature Data Array",                           index_func],
-    0x106: ["State of Charge Data",                             fixed_func],        
+    0x106: ["State of Charge Data",                             fixed_func],        #used to be unsigned 
     0x107: ["WDog Triggered",                                   unsigned_func],
     0x108: ["CAN Error",                                        unsigned_func],
     0x109: ["BPS Command msg",                                  unsigned_func],
