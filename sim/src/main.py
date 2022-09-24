@@ -1,5 +1,7 @@
 import logging
 import socket
+import time
+import math
 
 #All Data is little endian (smallest index of each field has LSB)
 #Should be sent in this format: for i in CAN_Test_Data: return can.CANparse(bytearray(i[3::-1] + i[7:3:-1] + i[16:7:-1]), 1)
@@ -59,6 +61,103 @@ IMU_Test_Data = [
     bytearray(b'\xfa\xfe\x01\x00\xbe\x03\x82\xfc\xaa\xfe\xcc\xfc\xf3\xff\xfa\xff\x0b\x00')
 ]
 
+# the different componenes of GPS data, first element is idk, then lat big, lat small, N or S
+# long big, long small, W or E, mph, unknown
+GPS_Test_Data_array = ["064951000A", 2307, ".", 1256, "N", 12016, ".", 4438, "E", 0.03165, ".482604063.05W"]
+start_time = time.time()
+
+#this updates the velocity as a sin wave and then uses 
+def update_GPS_data():
+    GPS_Test_Data_array[9] = round(GPS_Test_Data_array[9] + math.sin((time.time() - start_time)/4) * 0.3, 5)
+    GPS_Test_Data_array[1] = round(GPS_Test_Data_array[1] + GPS_Test_Data_array[9], 0)
+    GPS_Test_Data_array[5] = round(GPS_Test_Data_array[5] + GPS_Test_Data_array[9], 0)
+    GPS_Test_Data = ""
+    for i in GPS_Test_Data_array:
+        GPS_Test_Data += str(i)
+    
+def update_IMU_data():
+    pass
+
+def update_CAN_data():
+    pass
+
+def update_data():
+    update_GPS_data()
+    update_IMU_data()
+    update_CAN_data()
+    
+def send_data(CAN, index, socket):
+    socket.send(bytearray(CAN + index[3::-1] + index[7:3:-1] + index[16:7:-1]))
+    
+    
+def send_bps_contactor_state(CAN, socket):
+    #update bps contactor state
+    send_data(CAN, CAN_Test_Data[6], socket)
+    
+def send_WDOG_triggered(CAN, socket):
+    #update wdog
+    send_data(CAN, CAN_Test_Data[10], socket)
+    
+def send_CAN_error(CAN, socket):
+    #update can error
+    send_data(CAN, CAN_Test_Data[11], socket)
+    
+# sends all 1hz data at the CAN index to the socket
+def send_1hz_data(CAN, socket):
+    send_bps_contactor_state(CAN, socket)
+    send_WDOG_triggered(CAN, socket)
+    send_CAN_error(CAN, socket)
+
+
+
+def send_bps_trip(CAN, socket):
+    #update bps trip
+    send_data(CAN, CAN_Test_Data[1], socket)
+    
+def send_current(CAN, socket):
+    #update current data
+    send_data(CAN, CAN_Test_Data[7], socket)
+    
+def send_voltage(CAN, socket):
+    #update voltage data
+    send_data(CAN, CAN_Test_Data[8], socket)
+    
+def send_temperature(CAN, socket):
+    #update temperature data
+    send_data(CAN, CAN_Test_Data[9], socket)
+    
+def send_state_of_charge(CAN, socket):
+    #update state of charge data
+    send_data(CAN, CAN_Test_Data[10], socket)
+    
+def send_supplemental_voltage(CAN, socket):
+    #udpat supplemental voltage
+    send_data(CAN, CAN_Test_Data[12], socket)
+    
+def send_charging_enabled(CAN, socket):
+    #update charging enabled
+    send_data(CAN, CAN_Test_Data[13], socket)
+
+# sends all 5hz data at the CAN index to the socket
+def send_5hz_data(CAN, socket):
+    send_bps_trip(CAN, socket)
+    send_current(CAN, socket)
+    send_voltage(CAN, socket)
+    send_temperature(CAN, socket)
+    send_state_of_charge(CAN, socket)
+    send_supplemental_voltage(CAN, socket)
+    send_charging_enabled(CAN, socket)
+
+
+
+def send_bps_all_clear(CAN, socket):
+    #update bps all clear
+    send_data(CAN, CAN_Test_Data[5], socket)
+
+# sends all 50hz data at the CAN index to the socket
+def send_50hz_data(CAN, socket):
+    send_bps_all_clear(CAN, socket)
+
 HOST = 'app'
 PORT = 65432
 
@@ -71,17 +170,45 @@ def sender():
     eth_header_CAN = [0x03, 0x10]
     eth_header_GPS = [0x02, len(GPS_Test_Data)]
     eth_header_IMU = [0x01, 0x12]
+    
+    hz1 = time.time_ns()
+    hz5 = time.time_ns()
+    hz50 = time.time_ns()
+    nanosecond = 1000000000
 
     while True:
-        for i in CAN_Test_Data: 
-            s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]) )
-        logging.debug("CAN sent.")
+        cur_time = time.time_ns()
+        
+        if((cur_time - hz1) > nanosecond):
+            hz1 = cur_time
+            send_1hz_data(eth_header_CAN, s)
+            logging.debug("CAN sent at 1hz.")
+            
+        if(cur_time - hz5 > 0.2*nanosecond):
+            hz5 = cur_time
+            send_5hz_data(eth_header_CAN, s)
+            logging.debug("CAN sent at 5hz.")
+            
+        if(cur_time - hz50 > 0.02*nanosecond):
+            hz50 = cur_time
+            send_50hz_data(eth_header_CAN, s)
+            logging.debug("CAN sent at 50hz.")
+            
+
+        # for i in CAN_Test_Data: 
+        #     s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]) )
+            
+        
         s.sendall(bytearray(eth_header_GPS) + GPS_Test_Data.encode())
-        logging.debug("GPS sent.")
+        #logging.debug("GPS sent.")
         for i in IMU_Test_Data:
             s.sendall(bytearray(eth_header_IMU) + i)
-        logging.debug("IMU sent.")
+        #logging.debug("IMU sent.")
+        # time.sleep(1)
+        #logging.debug("\n")
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
+    HOST = 'localhost'
+    PORT = 65432
     sender()
