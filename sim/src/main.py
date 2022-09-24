@@ -2,6 +2,7 @@ import logging
 import socket
 import time
 import math
+import struct
 
 #All Data is little endian (smallest index of each field has LSB)
 #Should be sent in this format: for i in CAN_Test_Data: return can.CANparse(bytearray(i[3::-1] + i[7:3:-1] + i[16:7:-1]), 1)
@@ -66,25 +67,30 @@ IMU_Test_Data = [
 GPS_Test_Data_array = ["064951000A", 2307, ".", 1256, "N", 12016, ".", 4438, "E", 0.03165, ".482604063.05W"]
 start_time = time.time()
 
-#this updates the velocity as a sin wave and then uses 
-def update_GPS_data():
-    GPS_Test_Data_array[9] = round(GPS_Test_Data_array[9] + math.sin((time.time() - start_time)/4) * 0.3, 5)
-    GPS_Test_Data_array[1] = round(GPS_Test_Data_array[1] + GPS_Test_Data_array[9], 0)
-    GPS_Test_Data_array[5] = round(GPS_Test_Data_array[5] + GPS_Test_Data_array[9], 0)
-    GPS_Test_Data = ""
-    for i in GPS_Test_Data_array:
-        GPS_Test_Data += str(i)
+# #this updates the velocity as a sin wave and then uses 
+# def update_GPS_data():
+#     GPS_Test_Data_array[9] = round(GPS_Test_Data_array[9] + math.sin((time.time() - start_time)/4) * 0.3, 5)
+#     GPS_Test_Data_array[1] = round(GPS_Test_Data_array[1] + GPS_Test_Data_array[9], 0)
+#     GPS_Test_Data_array[5] = round(GPS_Test_Data_array[5] + GPS_Test_Data_array[9], 0)
+#     GPS_Test_Data = ""
+#     for i in GPS_Test_Data_array:
+#         GPS_Test_Data += str(i)
     
-def update_IMU_data():
-    pass
+# def update_IMU_data():
+#     pass
 
-def update_CAN_data():
-    pass
+# def update_CAN_data():
+#     pass
 
-def update_data():
-    update_GPS_data()
-    update_IMU_data()
-    update_CAN_data()
+# def update_data():
+#     update_GPS_data()
+#     update_IMU_data()
+#     update_CAN_data()
+
+def add_to_CAN_data(index, data):
+    i = CAN_Test_Data[index]
+    for k in range(1, len(data)):
+        i[len(i) - k] = data[k]
     
 def send_data(CAN, index, socket):
     socket.send(bytearray(CAN + index[3::-1] + index[7:3:-1] + index[16:7:-1]))
@@ -115,11 +121,19 @@ def send_bps_trip(CAN, socket):
     send_data(CAN, CAN_Test_Data[1], socket)
     
 def send_current(CAN, socket):
-    #update current data
+    x = (time.time() - start_time)/60
+    y = 3 * math.sin(3*x) + 4.1 * math.cos(x/3+1.2)-6 * math.sin(2.1*x/3-1.6)
+    low_bound = -20000
+    high_bound = 55000
+    y = struct.pack('q', round(low_bound + (high_bound - low_bound) / 26 * (y + 13)))
+    add_to_CAN_data(7, y)
+    
     send_data(CAN, CAN_Test_Data[7], socket)
+
     
 def send_voltage(CAN, socket):
-    #update voltage data
+    #update voltage
+    
     send_data(CAN, CAN_Test_Data[8], socket)
     
 def send_temperature(CAN, socket):
@@ -209,6 +223,6 @@ def sender():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    HOST = 'localhost'
-    PORT = 65432
+    # HOST = 'localhost'
+    # PORT = 65432
     sender()
