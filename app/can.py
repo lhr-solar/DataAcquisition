@@ -5,6 +5,12 @@ from influxdb_client import Point
 def float_func(load):
     return struct.unpack('<If', load[0:8]) + (0,)
 
+def fixed_func(load):
+    unpacked = struct.unpack('<Iq', load[0:12])
+    unpacked_list = list(unpacked)
+    unpacked_list[1] /= 1000000
+    return tuple(unpacked_list) + (0,)
+
 def unsigned_func(load):
     return struct.unpack('<IQ', load[0:12]) + (0,)
 
