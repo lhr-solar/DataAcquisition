@@ -8,6 +8,9 @@ def float_func(load):
 def unsigned_func(load):
     return struct.unpack('<IQ', load[0:12]) + (0,)
 
+def signed_func(load):
+    return struct.unpack('<Ii', load[0:8]) + (0,)
+
 def two_word_func(load):
     return struct.unpack('<III', load[0:12])
 
@@ -23,10 +26,10 @@ CANIDs = {
 
     0x101: ["BPS All Clear",                                    unsigned_func],
     0x102: ["BPS Contactor State",                              unsigned_func],
-    0x103: ["Current Data",                                     unsigned_func],
+    0x103: ["Current Data",                                     unsigned_func],      
     0x104: ["Voltage Data Array",                               index_func],
     0x105: ["Temperature Data Array",                           index_func],
-    0x106: ["State of Charge Data",                             unsigned_func],
+    0x106: ["State of Charge Data",                             unsigned_func],        
     0x107: ["WDog Triggered",                                   unsigned_func],
     0x108: ["CAN Error",                                        unsigned_func],
     0x109: ["BPS Command msg",                                  unsigned_func],
@@ -68,7 +71,7 @@ CANIDs = {
 }
 
 def CANparse(data):
-    # logging.debug(data)
+    logging.debug(data)
     canID = int.from_bytes(data[0:4], "little")
     logging.debug(canID)
     packet = CANIDs[canID][-1](data[4:])
