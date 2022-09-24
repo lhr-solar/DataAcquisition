@@ -47,16 +47,16 @@
             "fixedColor": "transparent",
             "mode": "fixed"
           },
-          "displayName": "${__series.name}",
+          "displayName": "${__series.name} - Okay",
           "mappings": [
             {
               "options": {
                 "0": {
-                  "color": "green",
+                  "color": "red",
                   "index": 0
                 },
                 "1": {
-                  "color": "red",
+                  "color": "green",
                   "index": 1
                 }
               },
@@ -2336,5 +2336,5 @@
   "timezone": "",
   "title": "BPS - Longhorn Racing",
   "uid": "RcFrQLv7k",
-  "version": 7
+  "version": 8
 }
