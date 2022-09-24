@@ -42,7 +42,7 @@ CANIDs = {
     0x10B: ["Supplemental Voltage",                             unsigned_func],
     0x10C: ["Charging Enabled",                                 unsigned_func],
 
-    0x580: ["Car State",                                        unsigned_func],
+    0x580: ["Car State",                                        unsigned_func],     #not used
     0x242: ["Motor Controller Bus", "Current", "Voltage",       two_word_func],
     0x243: ["Velocity", "m/s", "rpm",                           two_word_func],
     0x244: ["Motor Controller Phase Current", "B", "C",         two_word_func],

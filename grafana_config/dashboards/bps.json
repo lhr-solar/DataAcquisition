@@ -1103,7 +1103,7 @@
           "refId": "B"
         }
       ],
-      "title": "Motor Controller Phase Current",
+      "title": "Motor Controller Phase Current (rms)",
       "type": "timeseries"
     },
     {
@@ -1365,7 +1365,7 @@
               }
             ]
           },
-          "unit": "volt"
+          "unit": "celsius"
         },
         "overrides": []
       },
@@ -1450,7 +1450,7 @@
               }
             ]
           },
-          "unit": "amp"
+          "unit": "amph"
         },
         "overrides": []
       },
@@ -1477,7 +1477,7 @@
           "refId": "A"
         }
       ],
-      "title": "Odometer & Bus Amp Hours",
+      "title": "Charge Flow into Controller DC Bus",
       "type": "timeseries"
     },
     {
@@ -1557,7 +1557,7 @@
           "refId": "A"
         }
       ],
-      "title": "Odometer & Bus Amp Hours",
+      "title": "Odometer",
       "type": "timeseries"
     },
     {
