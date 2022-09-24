@@ -450,8 +450,8 @@
             }
           },
           "mappings": [],
-          "max": 20000000000,
-          "min": 0,
+          "max": 100000,
+          "min": -20000,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -461,7 +461,7 @@
               }
             ]
           },
-          "unit": "kamp"
+          "unit": "mamp"
         },
         "overrides": []
       },
@@ -2336,5 +2336,5 @@
   "timezone": "",
   "title": "BPS - Longhorn Racing",
   "uid": "RcFrQLv7k",
-  "version": 8
+  "version": 9
 }
