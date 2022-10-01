@@ -70,13 +70,23 @@ IMU_Test_Data = [
 GPS_Test_Data_array = ["064951000A", 2307, ".", 1256, "N", 12016, ".", 4438, "E", 0.03165, ".482604063.05W"]
 start_time = time.time()
 trip_map = {
-    "BPS_Trip": 0,
-    "BPS_All_Clear": 0,
-    "BPS_Contactor_State": 0,
-    "WDG_Trip": 0,
-    "Can_Error": 0
+    "BPS_Trip": 1,
+    "BPS_All_Clear": 1,
+    "BPS_Contactor_State": 1,
+    "WDG_Trip": 1,
+    "Can_Error": 1,
+    "Charging_Enabled": 1
 }
 
+#this updates the velocity as a sin wave 
+def update_GPS_data():
+    GPS_Test_Data_array[9] = round(GPS_Test_Data_array[9] + math.sin((time.time() - start_time)/4) * 0.3, 5)
+    GPS_Test_Data_array[1] = round(GPS_Test_Data_array[1] + GPS_Test_Data_array[9], 0)
+    GPS_Test_Data_array[5] = round(GPS_Test_Data_array[5] + GPS_Test_Data_array[9], 0)
+    GPS_Test_Data = ""
+    for i in GPS_Test_Data_array:
+        GPS_Test_Data += str(i)
+        
 def triggerBPSTrip():
     trip_map["BPS_Trip"] = 0
 
@@ -360,6 +370,10 @@ def sender():
     hz10 = time.time_ns()
     hz50 = time.time_ns()
     nanosecond = 1000000000
+    
+    #update time update for GPS update
+    hzGPS = time.time_ns()
+    hzIMU = time.time_ns()
 
     while True:
         cur_time = time.time_ns()
@@ -392,15 +406,20 @@ def sender():
 
         # for i in CAN_Test_Data: 
         # s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]) )
-            
         
-        s.sendall(bytearray(eth_header_GPS) + GPS_Test_Data.encode())
-        #logging.debug("GPS sent.")
-        for i in IMU_Test_Data:
-            s.sendall(bytearray(eth_header_IMU) + i)
-        #logging.debug("IMU sent.")
-        # time.sleep(1)
-        #logging.debug("\n")
+        #temporary place holder, unknown how much polling is gps
+        if(cur_time - hzGPS > nanosecond/2):
+            hzGPS = cur_time
+            update_GPS_data()
+            s.sendall(bytearray(eth_header_GPS) + GPS_Test_Data.encode())
+            logging.debug("GPS sent.")
+            
+        #temporary place holder, unknown how much polling is imu
+        if(cur_time - hzIMU > nanosecond/2):
+            hzIMU = cur_time
+            for i in IMU_Test_Data:
+                s.sendall(bytearray(eth_header_IMU) + i)
+            logging.debug("IMU sent.")
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
