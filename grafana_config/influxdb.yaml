@@ -1,0 +1,20 @@
+apiVersion: 1
+
+deleteDatasources:
+  - name: InfluxDB
+    orgId: $DOCKER_INFLUXDB_INIT_ORG_ID
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    secureJsonData:
+      token: $DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+    jsonData:
+      version: Flux
+      organization: $DOCKER_INFLUXDB_INIT_ORG
+      httpHeaderName1: 'Authorization'
+      tlsSkipVerify: true
+    secureJsonData:
+      httpHeaderValue1: 'Token $DOCKER_INFLUXDB_INIT_ADMIN_TOKEN'

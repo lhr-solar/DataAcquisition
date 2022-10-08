@@ -53,8 +53,6 @@ CAN_Test_Data = [
     [0x00, 0x00, 0x06, 0x16, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01] #Sunscatter B fault enabled(38)
 ]
 
-
-
 #                          1         2         3         4         5
 #                0123456789012345678901234567890123456789012345678901
 GPS_Test_Data = "064951000A2307.1256N12016.4438E0.03165.482604063.05W"
@@ -363,7 +361,7 @@ def sender():
     eth_header_CAN = [0x03, 0x10]
     eth_header_GPS = [0x02, len(GPS_Test_Data)]
     eth_header_IMU = [0x01, 0x12]
-    
+
     hz1 = time.time_ns()
     hz2 = time.time_ns()
     hz5 = time.time_ns()
