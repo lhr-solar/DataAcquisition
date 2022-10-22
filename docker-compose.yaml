@@ -17,6 +17,8 @@ services:
     restart: always
     env_file:
       - .env
+    environment:
+     - GF_INSTALL_PLUGINS=savantly-heatmap-panel
     volumes:
       - grafana_storage:/var/lib/grafana
       - ./grafana_config/grafana.ini:/etc/grafana/grafana.ini
