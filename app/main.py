@@ -11,7 +11,7 @@ import gps
 import imu
 import test
 
-HOST = '' #This listens to every interface
+HOST = '169.254.48.219' #This listens to every interface
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 IMU_ID = 1
 GPS_ID = 2
@@ -19,25 +19,23 @@ CAN_ID = 3
 
 def connect_socket(s: socket) -> socket:
 
-    logging.debug(f"Server listening on {HOST}")
-    s.listen(1)
-    (conn, addr) = s.accept()
-    logging.debug(f"Server accepted {addr}")
+    s.setblocking(True)
+    conn = s.create_connection((HOST, PORT))
+    logging.debug(f"Client connected to {HOST}")
     return conn
 
-def reconnect_socket(server: socket, conn: socket) -> socket:
+def reconnect_socket(s: socket, conn: socket) -> socket:
     
-    logging.warning("Server Disconnected")
+    logging.warning("Client Disconnected")
     conn.close()
-    return connect_socket(server)
+    return connect_socket(s)
 
-class ServerDisconnectError(Exception): pass
+class ClientDisconnectError(Exception): pass
 
 def receiver():
 
-    s = socket.create_server(address=(HOST, PORT), family=socket.AF_INET)
-    logging.debug("Server starting...")
-    s.setblocking(True)
+    logging.debug(f"Client starting...")
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     conn = connect_socket(s)
 
     client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
@@ -50,12 +48,12 @@ def receiver():
     while True:
         try:
             if conn.recv_into(buf, 2) == 0:
-                raise ServerDisconnectError
+                raise ClientDisconnectError
             
             ethID = int.from_bytes([buf[0]], "little")
             length = int.from_bytes([buf[1]], "little")
             if ethID not in parser:
-                raise ServerDisconnectError
+                raise ClientDisconnectError
 
             # put CAN/IMU/GPS message into bytearray
             # necessary as recv might not always return the given bytes
@@ -64,12 +62,12 @@ def receiver():
             while i < length:
                 recv_len = conn.recv_into(buf, length-i)
                 if recv_len == 0:
-                    raise ServerDisconnectError
+                    raise ClientDisconnectError
                 r[i:recv_len+i] = buf[:recv_len]
                 i += recv_len
             
             write_api.write(bucket="LHR", record=parser[ethID](r))
-        except ServerDisconnectError:
+        except ClientDisconnectError:
             conn = reconnect_socket(s, conn)
 
         
