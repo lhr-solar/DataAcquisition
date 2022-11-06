@@ -18,7 +18,7 @@ services:
     env_file:
       - .env
     environment:
-     - GF_INSTALL_PLUGINS=savantly-heatmap-panel
+     - GF_INSTALL_PLUGINS=pr0ps-trackmap-panel
     volumes:
       - grafana_storage:/var/lib/grafana
       - ./grafana_config/grafana.ini:/etc/grafana/grafana.ini

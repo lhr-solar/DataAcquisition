@@ -2,6 +2,8 @@
 import logging
 import socket
 import time
+import struct
+import random
 
 #All Data is little endian (smallest index of each field has LSB)
 #Should be sent in this format: for i in CAN_Test_Data: return can.CANparse(bytearray(i[3::-1] + i[7:3:-1] + i[16:7:-1]), 1)
@@ -84,19 +86,44 @@ CAN_Test_Data = [
 
 #                          1         2         3         4         5
 #                0123456789012345678901234567890123456789012345678901
-GPS_Test_Data = "064951000A2307.1256N12016.4438E30.4141.482604063.05W"
+GPS_Test_Data = "064951000A3855.5137N09540.4829W30.4141.482604063.05W"
+# 38.9252284 -95.6747154 topeka coords
 
 IMU_Test_Data = [                                                                           # Accelerometer:Magnetometer:Gyroscope           
     bytearray(b'\xf8\xfe\x01\x00\xbe\x03\x82\xfc\xaa\xfe\xcc\xfc\x00\x00\xfe\xff\x02\x00'), #-264, 1, 958:-894, -342, -820:  0, -2,  2
     bytearray(b'\xf9\xfe\x00\x00\xbb\x03\x82\xfc\xaa\xfe\xcc\xfc\xfb\xff\xff\xff\x06\x00'), #-263, 0, 995:-894, -342, -820:  0, -2,  2
     bytearray(b'\xfa\xfe\x01\x00\xbe\x03\x82\xfc\xaa\xfe\xcc\xfc\xf3\xff\xfa\xff\x0b\x00'), #-262, 1, 958:-894, -342, -820:-13, -6, 11
-]
+]   
 
 HOST = 'app'
 PORT = 65432
 eth_header_CAN = [0x03, 0x10]
 eth_header_GPS = [0x02, len(GPS_Test_Data)]
 eth_header_IMU = [0x01, 0x12]
+
+def generateGPS(lat, lon, speed) -> bytearray:
+    gps = "064951000A" + f'{int(abs(lat)):02}' + f'{(abs(lat)%1)*60:02.4f}' + ("N" if lat > 0 else "S") + f'{int(abs(lon)):03}' + f'{(abs(lon)%1)*60:02.4f}' + ("E" if lon > 0 else "W") + f'{speed/1.15078:02.4f}' + ".482604063.05W"
+    return bytearray(eth_header_GPS) + gps.encode()
+
+def generateIMU(lower, upper) -> bytearray:
+    buf = bytearray(20)
+    struct.pack_into('bb', buf, 0, eth_header_IMU[0], eth_header_IMU[1])
+    for i in range(1, 10):
+        struct.pack_into('h', buf, i*2, random.randrange(lower, upper))
+    return buf
+
+def move(start, target):
+    if count == 30:
+        lat = start[0]
+        lon = start[1]
+    if count > 0:
+                lat += (abs(target[0]-start[0]))/30 * (-1 if target[0] < start[0] else 1)
+                lon += (abs(target[1]-start[1]))/30 * (-1 if target[1] < start[1] else 1)
+                count -= 1
+
+lon = 0
+lat = 0
+count = 30
 
 def reconnect_socket(client: socket) -> socket:
 
@@ -112,18 +139,18 @@ def sender():
     s = socket.create_connection(address=(HOST, PORT))
     logging.debug("Client starting...")
     s.setblocking(True)
-
     while True:
         try:
             for i in CAN_Test_Data: 
                 s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]) )
             logging.debug("CAN sent.")
-            s.sendall(bytearray(eth_header_GPS) + GPS_Test_Data.encode())
+            s.sendall(generateGPS(lon, lat, 40))
             logging.debug("GPS sent.")
-            for i in IMU_Test_Data:
-                s.sendall(bytearray(eth_header_IMU) + i)
+            s.sendall(generateIMU(-1000, 1000))
             logging.debug("IMU sent.")
             time.sleep(1)
+            move((38.931040,-95.677832), (38.919812,-95.675766))
+            
         except:
             s = reconnect_socket(s)
 
