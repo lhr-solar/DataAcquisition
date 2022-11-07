@@ -28,6 +28,32 @@
   "liveNow": false,
   "panels": [
     {
+      "collapsed": false,
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 71,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Motion",
+      "type": "row"
+    },
+    {
       "datasource": {
         "type": "influxdb",
         "uid": "P951FEA4DE68E13C5"
@@ -60,10 +86,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
-        "w": 6,
+        "h": 15,
+        "w": 3,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 84,
       "options": {
@@ -84,12 +110,126 @@
         "layers": [
           {
             "config": {
-              "showLegend": true,
+              "rules": [],
+              "src": "public/maps/HeartlandConv.geojson",
               "style": {
                 "color": {
-                  "fixed": "dark-green"
+                  "fixed": "#8F3BB8"
                 },
                 "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/square.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "mode": "auto"
+            },
+            "name": "Track",
+            "tooltip": true,
+            "type": "geojson"
+          },
+          {
+            "config": {
+              "rules": [
+                {
+                  "check": {
+                    "operation": "eq",
+                    "property": "name",
+                    "value": "S0"
+                  },
+                  "style": {
+                    "color": {
+                      "fixed": "#8F3BB8"
+                    },
+                    "opacity": 1,
+                    "rotation": {
+                      "fixed": 0,
+                      "max": 360,
+                      "min": -360,
+                      "mode": "mod"
+                    },
+                    "size": {
+                      "fixed": 5,
+                      "max": 15,
+                      "min": 2
+                    },
+                    "symbol": {
+                      "fixed": "img/icons/marker/square.svg",
+                      "mode": "fixed"
+                    },
+                    "textConfig": {
+                      "fontSize": 12,
+                      "offsetX": 0,
+                      "offsetY": 0,
+                      "textAlign": "center",
+                      "textBaseline": "middle"
+                    }
+                  }
+                }
+              ],
+              "src": "public/maps/Heartland.geojson",
+              "style": {
+                "color": {
+                  "fixed": "#8F3BB8"
+                },
+                "opacity": 0,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/square.svg",
+                  "mode": "fixed"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "name": "Checkpoints",
+            "opacity": 1,
+            "tooltip": true,
+            "type": "geojson"
+          },
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "fixed": "blue"
+                },
+                "opacity": 0.5,
                 "rotation": {
                   "fixed": 0,
                   "max": 360,
@@ -132,20 +272,21 @@
           "mode": "details"
         },
         "view": {
+          "allLayers": true,
           "id": "coords",
           "lat": 38.925,
-          "lon": -95.677101,
-          "zoom": 15
+          "lon": -95.67399292796479,
+          "zoom": 15.3
         }
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"GPS\")\r\n  |> filter(fn: (r) => r._field == \"lat\" or r._field == \"lon\")\r\n|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")",
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"GPS\")\r\n  |> filter(fn: (r) => r._field == \"lat\" or r._field == \"lon\")\r\n  |> last()\r\n|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  ",
           "refId": "A"
         }
       ],
@@ -153,17 +294,335 @@
       "type": "geomap"
     },
     {
-      "collapsed": false,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "yellow",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "velocitymph"
+        },
+        "overrides": []
+      },
       "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
+        "h": 15,
+        "w": 14,
+        "x": 3,
+        "y": 1
+      },
+      "id": 75,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"GPS\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"MPH\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "MPH",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "accMS2"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 7,
+        "x": 17,
+        "y": 1
+      },
+      "id": 77,
+      "options": {
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.2.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Accelerometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"x\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "hide": false,
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Accelerometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"y\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "hide": false,
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Accelerometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"z\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "C"
+        }
+      ],
+      "title": "Accelerometer",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "T"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 7,
+        "x": 17,
+        "y": 6
+      },
+      "id": 78,
+      "options": {
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.2.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Magnetometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"x\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "hide": false,
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Magnetometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"y\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "hide": false,
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Magnetometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"z\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "C"
+        }
+      ],
+      "title": "Magnetometer",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "rotdegs"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 7,
+        "x": 17,
         "y": 11
       },
-      "id": 82,
-      "panels": [],
-      "title": "Map",
-      "type": "row"
+      "id": 79,
+      "options": {
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.2.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Gyroscope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"x\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "hide": false,
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Gyroscope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"y\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "hide": false,
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Gyroscope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"z\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
+          "refId": "C"
+        }
+      ],
+      "title": "Gyroscope",
+      "type": "gauge"
     },
     {
       "collapsed": false,
@@ -175,7 +634,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 16
       },
       "id": 39,
       "panels": [],
@@ -237,7 +696,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 13
+        "y": 17
       },
       "id": 41,
       "options": {
@@ -255,7 +714,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -326,7 +785,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 13
+        "y": 17
       },
       "id": 43,
       "options": {
@@ -342,7 +801,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -366,7 +825,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 24
       },
       "id": 35,
       "panels": [],
@@ -428,7 +887,7 @@
         "h": 6,
         "w": 7,
         "x": 0,
-        "y": 21
+        "y": 25
       },
       "id": 45,
       "options": {
@@ -446,7 +905,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -526,7 +985,7 @@
         "h": 6,
         "w": 7,
         "x": 7,
-        "y": 21
+        "y": 25
       },
       "id": 46,
       "options": {
@@ -544,7 +1003,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -602,7 +1061,7 @@
         "h": 6,
         "w": 10,
         "x": 14,
-        "y": 21
+        "y": 25
       },
       "id": 48,
       "options": {
@@ -620,7 +1079,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -692,8 +1151,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -705,7 +1163,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 27
+        "y": 31
       },
       "id": 25,
       "options": {
@@ -749,8 +1207,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "semi-dark-red",
-                "value": null
+                "color": "semi-dark-red"
               },
               {
                 "color": "semi-dark-red",
@@ -778,7 +1235,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 27
+        "y": 31
       },
       "id": 24,
       "options": {
@@ -794,7 +1251,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -856,8 +1313,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -869,7 +1325,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 27
+        "y": 31
       },
       "id": 18,
       "options": {
@@ -907,7 +1363,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 37
       },
       "id": 50,
       "panels": [],
@@ -956,8 +1412,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -969,7 +1424,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 34
+        "y": 38
       },
       "id": 52,
       "options": {
@@ -987,7 +1442,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -1058,8 +1513,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1075,7 +1529,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 34
+        "y": 38
       },
       "id": 54,
       "options": {
@@ -1149,8 +1603,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1166,7 +1619,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 34
+        "y": 38
       },
       "id": 55,
       "options": {
@@ -1209,8 +1662,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "semi-dark-red",
-                "value": null
+                "color": "semi-dark-red"
               },
               {
                 "color": "semi-dark-red",
@@ -1238,7 +1690,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 40
+        "y": 44
       },
       "id": 58,
       "options": {
@@ -1254,7 +1706,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -1283,8 +1735,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "semi-dark-red",
-                "value": null
+                "color": "semi-dark-red"
               },
               {
                 "color": "semi-dark-red",
@@ -1312,7 +1763,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 40
+        "y": 44
       },
       "id": 59,
       "options": {
@@ -1328,7 +1779,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -1388,8 +1839,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1405,7 +1855,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 40
+        "y": 44
       },
       "id": 60,
       "options": {
@@ -1457,8 +1907,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1474,7 +1923,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 46
+        "y": 50
       },
       "id": 62,
       "options": {
@@ -1492,7 +1941,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -1530,8 +1979,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1547,7 +1995,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 46
+        "y": 50
       },
       "id": 63,
       "options": {
@@ -1565,7 +2013,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -1634,8 +2082,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1651,7 +2098,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 46
+        "y": 50
       },
       "id": 64,
       "options": {
@@ -1734,8 +2181,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1751,7 +2197,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 52
+        "y": 56
       },
       "id": 65,
       "options": {
@@ -1834,8 +2280,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1851,7 +2296,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 52
+        "y": 56
       },
       "id": 66,
       "options": {
@@ -1925,8 +2370,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1942,7 +2386,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 52
+        "y": 56
       },
       "id": 67,
       "options": {
@@ -1980,7 +2424,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 58
+        "y": 62
       },
       "id": 33,
       "panels": [],
@@ -2029,8 +2473,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -2042,7 +2485,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 59
+        "y": 63
       },
       "id": 37,
       "options": {
@@ -2062,7 +2505,7 @@
           "titleSize": 15
         }
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -2106,8 +2549,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -2119,7 +2561,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 59
+        "y": 63
       },
       "id": 80,
       "options": {
@@ -2139,7 +2581,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.1.7",
+      "pluginVersion": "9.2.3",
       "targets": [
         {
           "datasource": {
@@ -2210,8 +2652,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2227,7 +2668,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 59
+        "y": 63
       },
       "id": 27,
       "options": {
@@ -2311,8 +2752,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2328,7 +2768,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 66
+        "y": 70
       },
       "id": 31,
       "options": {
@@ -2430,8 +2870,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2447,7 +2886,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 66
+        "y": 70
       },
       "id": 29,
       "options": {
@@ -2501,458 +2940,6 @@
       ],
       "title": "Sunscatter Voltage Measurement",
       "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 73
-      },
-      "id": 71,
-      "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
-          "refId": "A"
-        }
-      ],
-      "title": "GPS",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P951FEA4DE68E13C5"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "string"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 74
-      },
-      "id": 73,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.1.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"GPS\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"lat\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"GPS\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"lon\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "B"
-        }
-      ],
-      "title": "Status",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P951FEA4DE68E13C5"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "yellow",
-            "mode": "fixed"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "velocitymph"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 74
-      },
-      "id": 75,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"GPS\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"MPH\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        }
-      ],
-      "title": "MPH",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "datasource": {
-        "type": "datasource",
-        "uid": "grafana"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 82
-      },
-      "id": 69,
-      "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "datasource",
-            "uid": "grafana"
-          },
-          "refId": "A"
-        }
-      ],
-      "title": "IMU",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P951FEA4DE68E13C5"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "accMS2"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 0,
-        "y": 83
-      },
-      "id": 77,
-      "options": {
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "9.1.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Accelerometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"x\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Accelerometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"y\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Accelerometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"z\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "C"
-        }
-      ],
-      "title": "Accelerometer",
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P951FEA4DE68E13C5"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "T"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 8,
-        "y": 83
-      },
-      "id": 78,
-      "options": {
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "9.1.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Magnetometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"x\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Magnetometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"y\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Magnetometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"z\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "C"
-        }
-      ],
-      "title": "Magnetometer",
-      "type": "gauge"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "P951FEA4DE68E13C5"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "rotdegs"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 16,
-        "y": 83
-      },
-      "id": 79,
-      "options": {
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "9.1.7",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Gyroscope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"x\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Gyroscope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"y\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P951FEA4DE68E13C5"
-          },
-          "hide": false,
-          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Gyroscope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"z\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
-          "refId": "C"
-        }
-      ],
-      "title": "Gyroscope",
-      "type": "gauge"
     }
   ],
   "refresh": "50ms",
@@ -2963,7 +2950,7 @@
     "list": []
   },
   "time": {
-    "from": "now-30s",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -2986,6 +2973,6 @@
   "timezone": "",
   "title": "BPS - Longhorn Racing",
   "uid": "RcFrQLv7k",
-  "version": 10,
+  "version": 8,
   "weekStart": ""
 }

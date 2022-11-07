@@ -98,7 +98,7 @@ IMU_Test_Data = [                                                               
 HOST = 'app'
 PORT = 65432
 eth_header_CAN = [0x03, 0x10]
-eth_header_GPS = [0x02, len(GPS_Test_Data)]
+eth_header_GPS = [0x02, 0x34]
 eth_header_IMU = [0x01, 0x12]
 
 def generateGPS(lat, lon, speed) -> bytearray:
@@ -113,17 +113,16 @@ def generateIMU(lower, upper) -> bytearray:
     return buf
 
 def move(start, target):
-    if count == 30:
-        lat = start[0]
-        lon = start[1]
-    if count > 0:
-                lat += (abs(target[0]-start[0]))/30 * (-1 if target[0] < start[0] else 1)
-                lon += (abs(target[1]-start[1]))/30 * (-1 if target[1] < start[1] else 1)
-                count -= 1
-
-lon = 0
-lat = 0
-count = 30
+    if move.count == 30:
+        move.lat, move.lon = start
+    if move.count > 0:
+        move.lat += (abs(target[0]-start[0]))/30 * (-1 if target[0] < start[0] else 1)
+        move.lon += (abs(target[1]-start[1]))/30 * (-1 if target[1] < start[1] else 1)
+        move.count -= 1
+        return generateGPS(move.lat, move.lon, 40)
+move.count = 30
+move.lat = 0
+move.lon = 0
 
 def reconnect_socket(client: socket) -> socket:
 
@@ -144,12 +143,11 @@ def sender():
             for i in CAN_Test_Data: 
                 s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]) )
             logging.debug("CAN sent.")
-            s.sendall(generateGPS(lon, lat, 40))
+            s.sendall(move((38.92959, -95.677242), (38.926558, -95.676713)))
             logging.debug("GPS sent.")
             s.sendall(generateIMU(-1000, 1000))
             logging.debug("IMU sent.")
             time.sleep(1)
-            move((38.931040,-95.677832), (38.919812,-95.675766))
             
         except:
             s = reconnect_socket(s)

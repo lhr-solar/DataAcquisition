@@ -9,7 +9,6 @@ import logging
 import can
 import gps
 import imu
-import test
 
 HOST = '' #This listens to every interface
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)

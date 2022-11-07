@@ -1,0 +1,565 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S0",
+                "next": "S1"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67671317359489,
+                    38.92655827155838
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S1",
+                "next": "S2"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67659954172996,
+                    38.92589055793067
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S2",
+                "next": "S3"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67643168964423,
+                    38.92553672170072
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S3",
+                "next": "S4"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67567386152191,
+                    38.923883770294225
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S4",
+                "next": "S5"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67571074662897,
+                    38.92247471643776
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S5",
+                "next": "S6"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67567865793694,
+                    38.921866672496634
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S6",
+                "next": "S7"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67550335402179,
+                    38.92156116485174
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S7",
+                "next": "S8"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67494724520202,
+                    38.92143062259737
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S8",
+                "next": "S9"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67429639846033,
+                    38.921549328574656
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S9",
+                "next": "S10"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67312626498466,
+                    38.92184468287908
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S10",
+                "next": "S11"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67125689934782,
+                    38.92248036182758
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S11",
+                "next": "S12"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67102534477056,
+                    38.92264570359072
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S12",
+                "next": "S13"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67082392400779,
+                    38.92294430490213
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S13",
+                "next": "S14"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67103763972347,
+                    38.92476855897095
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S14",
+                "next": "S15"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67109397387892,
+                    38.92493910052485
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S15",
+                "next": "S16"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67125101029026,
+                    38.925011208356125
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S16",
+                "next": "S17"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.6715706453899,
+                    38.925051223592334
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S17",
+                "next": "S18"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67174923315646,
+                    38.92517432645542
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S18",
+                "next": "S19"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67189129320082,
+                    38.92532390676129
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S19",
+                "next": "S20"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.6719237893175,
+                    38.925632923740494
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S20",
+                "next": "S21"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67187620961006,
+                    38.92584884547557
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S21",
+                "next": "S22"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67163951800755,
+                    38.92618358346675
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S22",
+                "next": "S23"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67144762035436,
+                    38.92665387797214
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S23",
+                "next": "S24"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67150105021011,
+                    38.927040433024956
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S24",
+                "next": "S25"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67238546084339,
+                    38.92971654234512
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S25",
+                "next": "S26"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67254794177586,
+                    38.929875644916024
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S26",
+                "next": "S27"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67284063445356,
+                    38.929945190424036
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S27",
+                "next": "S28"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67393299471657,
+                    38.930094572370024
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S28",
+                "next": "S29"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67416778833925,
+                    38.93020719397845
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S29",
+                "next": "S30"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67453508819472,
+                    38.930813260803006
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S30",
+                "next": "S31"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67477352215,
+                    38.9309244068661
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S31",
+                "next": "S32"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67509411565192,
+                    38.93089912060063
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S32",
+                "next": "S33"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67537211246243,
+                    38.930760984052114
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S33",
+                "next": "S34"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67581346584679,
+                    38.930206506601735
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S34",
+                "next": "S35"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67602919591921,
+                    38.93005805090033
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S35",
+                "next": "S36"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67627807123472,
+                    38.93006376710508
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S36",
+                "next": "S37"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67686340897426,
+                    38.93039659975622
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S37",
+                "next": "S38"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67711287434392,
+                    38.93037383275191
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S38",
+                "next": "S39"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67726174111847,
+                    38.93016263965018
+                ],
+                "type": "Point"
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "S39",
+                "next": "S0"
+            },
+            "geometry": {
+                "coordinates": [
+                    -95.67724230949905,
+                    38.92959004460357
+                ],
+                "type": "Point"
+            }
+        }
+    ]
+}

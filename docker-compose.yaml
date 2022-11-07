@@ -25,6 +25,7 @@ services:
       - ./grafana_config/influxdb.yaml:/etc/grafana/provisioning/datasources/influxdb.yaml
       - ./grafana_config/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
       - ./grafana_config/dashboards:/var/lib/grafana/dashboards
+      - ./app/track:/usr/share/grafana/public/maps
     ports:
       - 3000:3000
     depends_on:
