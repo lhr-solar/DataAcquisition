@@ -87,7 +87,7 @@
       },
       "gridPos": {
         "h": 15,
-        "w": 3,
+        "w": 4,
         "x": 0,
         "y": 1
       },
@@ -279,7 +279,7 @@
           "zoom": 15.3
         }
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -353,9 +353,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 15,
-        "w": 14,
-        "x": 3,
+        "h": 7,
+        "w": 20,
+        "x": 4,
         "y": 1
       },
       "id": 75,
@@ -392,8 +392,39 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 1,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -413,32 +444,32 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 7,
-        "x": 17,
-        "y": 1
+        "h": 8,
+        "w": 6,
+        "x": 4,
+        "y": 8
       },
       "id": 77,
       "options": {
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
+          "hide": true,
           "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Accelerometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"x\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "A"
         },
@@ -447,7 +478,7 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "hide": false,
+          "hide": true,
           "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Accelerometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"y\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "B"
         },
@@ -456,13 +487,46 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "hide": false,
+          "hide": true,
           "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Accelerometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"z\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$A / 100",
+          "hide": false,
+          "refId": "x",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$B/100",
+          "hide": false,
+          "refId": "y",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$C/100",
+          "hide": false,
+          "refId": "z",
+          "type": "math"
         }
       ],
       "title": "Accelerometer",
-      "type": "gauge"
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -472,7 +536,37 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
           "thresholds": {
@@ -488,37 +582,37 @@
               }
             ]
           },
-          "unit": "T"
+          "unit": "µT"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 7,
-        "x": 17,
-        "y": 6
+        "x": 10,
+        "y": 8
       },
       "id": 78,
       "options": {
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
+          "hide": true,
           "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Magnetometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"x\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "A"
         },
@@ -527,7 +621,7 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "hide": false,
+          "hide": true,
           "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Magnetometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"y\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "B"
         },
@@ -536,13 +630,46 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "hide": false,
+          "hide": true,
           "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Magnetometer\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"z\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$A/10",
+          "hide": false,
+          "refId": "x",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$B/10",
+          "hide": false,
+          "refId": "y",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$C/10",
+          "hide": false,
+          "refId": "z",
+          "type": "math"
         }
       ],
       "title": "Magnetometer",
-      "type": "gauge"
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -552,7 +679,37 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
           "thresholds": {
@@ -573,32 +730,32 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 8,
         "w": 7,
         "x": 17,
-        "y": 11
+        "y": 8
       },
       "id": 79,
       "options": {
-        "orientation": "vertical",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
+          "hide": true,
           "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Gyroscope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"x\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "A"
         },
@@ -607,7 +764,7 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "hide": false,
+          "hide": true,
           "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Gyroscope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"y\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "B"
         },
@@ -616,13 +773,46 @@
             "type": "influxdb",
             "uid": "P951FEA4DE68E13C5"
           },
-          "hide": false,
+          "hide": true,
           "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Gyroscope\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"z\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> yield(name: \"mean\")",
           "refId": "C"
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$A/10",
+          "hide": false,
+          "refId": "Pitch",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$B/10",
+          "hide": false,
+          "refId": "Roll",
+          "type": "math"
+        },
+        {
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "$C/10",
+          "hide": false,
+          "refId": "Yaw",
+          "type": "math"
         }
       ],
       "title": "Gyroscope",
-      "type": "gauge"
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -714,7 +904,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -801,7 +991,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -905,7 +1095,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -1003,7 +1193,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -1079,7 +1269,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -1251,7 +1441,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -1442,7 +1632,7 @@
         "showUnfilled": true,
         "text": {}
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -1706,7 +1896,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -1779,7 +1969,7 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -1941,7 +2131,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -2013,7 +2203,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -2505,7 +2695,7 @@
           "titleSize": 15
         }
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -2581,7 +2771,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.3",
+      "pluginVersion": "9.1.7",
       "targets": [
         {
           "datasource": {
@@ -2942,7 +3132,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "50ms",
+  "refresh": "100ms",
   "schemaVersion": 37,
   "style": "dark",
   "tags": [],
@@ -2950,7 +3140,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -2973,6 +3163,6 @@
   "timezone": "",
   "title": "BPS - Longhorn Racing",
   "uid": "RcFrQLv7k",
-  "version": 8,
+  "version": 14,
   "weekStart": ""
 }

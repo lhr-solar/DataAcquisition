@@ -153,5 +153,6 @@ def sender():
             s = reconnect_socket(s)
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    sender()
+    # logging.basicConfig(level=logging.DEBUG)
+    # sender()
+    pass

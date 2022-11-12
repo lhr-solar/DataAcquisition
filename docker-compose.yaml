@@ -41,7 +41,7 @@ services:
     env_file:
       - .env
     ports:
-      - 65432:65432 #This is the IP address that the telemetry system connects to
+      - 169.254.48.219:65432:65432 #This is the IP address that the telemetry system connects to
     # networks:
     #   vpcbr:
     #     ipv4_address: 10.5.0.5
@@ -49,23 +49,23 @@ services:
       - ./app:/lhr-pi/app
     depends_on:
       - influxdb
-  telemetry:
-    container_name: telemetry
-    image: dataacquisition_telemetry:latest
-    build:
-      context: ./sim
-      args:
-        reload: 1
-    restart: always
-    ports:
-      - 65433:65433
-    # networks:
-    #   vpcbr:
-    #     ipv4_address: 10.5.0.6
-    volumes: 
-      - ./sim/src:/telemetry/src
-    depends_on:
-      - app
+  # telemetry:
+  #   container_name: telemetry
+  #   image: dataacquisition_telemetry:latest
+  #   build:
+  #     context: ./sim
+  #     args:
+  #       reload: 1
+  #   restart: always
+  #   ports:
+  #     - 65433:65433
+  #   # networks:
+  #   #   vpcbr:
+  #   #     ipv4_address: 10.5.0.6
+  #   volumes: 
+  #     - ./sim/src:/telemetry/src
+  #   depends_on:
+  #     - app
   nginx:
     container_name: nginx
     image: nginx:latest
