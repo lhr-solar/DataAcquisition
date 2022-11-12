@@ -141,7 +141,7 @@ def sender():
     while True:
         try:
             for i in CAN_Test_Data: 
-                s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]) )
+                s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]))
             logging.debug("CAN sent.")
             s.sendall(move((38.92959, -95.677242), (38.926558, -95.676713)))
             logging.debug("GPS sent.")

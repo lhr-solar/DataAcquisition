@@ -53,6 +53,6 @@ def convertPointToLineString(trackName):
     print("Conversion complete.")
 
 
-# updateElevation("HeartLand")
+updateElevation("HeartLand")
 # updateNameNext("Heartland")
-convertPointToLineString("Heartland")
+# convertPointToLineString("Heartland")
