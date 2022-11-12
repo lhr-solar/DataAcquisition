@@ -38,7 +38,7 @@ def updateNameNext(trackName):
     print("Properties updated.")
 
 
-def convertPointToLineString(trackName):
+def generateLine(trackName):
     with open("app/track/" + trackName + ".geojson", "r") as f:
         track = geojson.load(f)
     line = geojson.LineString([])
@@ -52,7 +52,7 @@ def convertPointToLineString(trackName):
         geojson.dump(fc, f, indent=4)
     print("Conversion complete.")
 
-
-updateElevation("HeartLand")
-# updateNameNext("Heartland")
-# convertPointToLineString("Heartland")
+file = "dynamic"
+updateElevation(file)
+# updateNameNext(file)
+# generateLine("minimap")
