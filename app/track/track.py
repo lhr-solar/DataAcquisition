@@ -67,7 +67,9 @@ class Track:
     def getRadius(self, p1=None):
         if(p1 == None):
             p1 = self.curr
-        return self._getPoint(p1)["properties"]["radius"]
+        if("radius" in self._getPoint(p1)["properties"]):
+            return self._getPoint(p1)["properties"]["radius"]
+        return float("inf")
     
     # gets distance in feet from A to B and supports paths
     def getDistance(self, p1, p2):
