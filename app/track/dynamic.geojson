@@ -28,7 +28,8 @@
             "properties": {
                 "elevation": 1077.77,
                 "name": "S1",
-                "next": "S2"
+                "next": "S2",
+                "radius": 500
             }
         },
         {
@@ -58,7 +59,8 @@
             "properties": {
                 "elevation": 1083.81,
                 "name": "S3",
-                "next": "S4"
+                "next": "S4",
+                "radius": 450.1
             }
         },
         {
@@ -88,9 +90,9 @@
             "properties": {
                 "elevation": 1069.31,
                 "name": "S5",
-                "left": "S6",
-                "middle": "S28",
-                "right": "S44"
+                "left": "S51",
+                "middle": "S52",
+                "right": "S53"
             }
         },
         {
@@ -120,7 +122,8 @@
             "properties": {
                 "elevation": 1068.84,
                 "name": "S7",
-                "next": "S8"
+                "next": "S54",
+                "radius": 177.9
             }
         },
         {
@@ -128,14 +131,15 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -95.6742,
-                    38.921565
+                    -95.674376,
+                    38.921511
                 ]
             },
             "properties": {
-                "elevation": 1077.84,
+                "elevation": 1076.95,
                 "name": "S8",
-                "next": "S37"
+                "left": "S9",
+                "right": "S37"
             }
         },
         {
@@ -150,7 +154,8 @@
             "properties": {
                 "elevation": 1087.05,
                 "name": "S9",
-                "next": "S10"
+                "next": "S10",
+                "radius": 260.1
             }
         },
         {
@@ -165,7 +170,8 @@
             "properties": {
                 "elevation": 1088.33,
                 "name": "S10",
-                "next": "S11"
+                "left": "S11",
+                "right": "S43"
             }
         },
         {
@@ -180,8 +186,8 @@
             "properties": {
                 "elevation": 1089.48,
                 "name": "S11",
-                "left": "S12",
-                "right": "S43"
+                "next": "S12",
+                "radius": 553.7
             }
         },
         {
@@ -204,14 +210,15 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -95.67172,
-                    38.925114
+                    -95.671875,
+                    38.925323
                 ]
             },
             "properties": {
-                "elevation": 1092.06,
+                "elevation": 1092.27,
                 "name": "S13",
-                "next": "S14"
+                "next": "S14",
+                "radius": 221.5
             }
         },
         {
@@ -226,7 +233,8 @@
             "properties": {
                 "elevation": 1091.08,
                 "name": "S14",
-                "next": "S15"
+                "next": "S15",
+                "radius": 664.5
             }
         },
         {
@@ -256,7 +264,8 @@
             "properties": {
                 "elevation": 1090.31,
                 "name": "S16",
-                "next": "S17"
+                "next": "S17",
+                "radius": 150.9
             }
         },
         {
@@ -286,7 +295,8 @@
             "properties": {
                 "elevation": 1088.46,
                 "name": "S18",
-                "next": "S19"
+                "next": "S19",
+                "radius": 119.3
             }
         },
         {
@@ -316,7 +326,8 @@
             "properties": {
                 "elevation": 1090.92,
                 "name": "S20",
-                "next": "S21"
+                "next": "S21",
+                "radius": 128.4
             }
         },
         {
@@ -324,14 +335,15 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -95.675302,
-                    38.930813
+                    -95.675337,
+                    38.93078
                 ]
             },
             "properties": {
                 "elevation": 1086.87,
                 "name": "S21",
-                "next": "S22"
+                "nopit": "S22",
+                "pit": "S45"
             }
         },
         {
@@ -346,8 +358,8 @@
             "properties": {
                 "elevation": 1078.34,
                 "name": "S22",
-                "nopit": "S23",
-                "pit": "S45"
+                "next": "S23",
+                "radius": 75.2
             }
         },
         {
@@ -377,7 +389,8 @@
             "properties": {
                 "elevation": 1077.2,
                 "name": "S24",
-                "next": "S25"
+                "next": "S25",
+                "radius": 86.3
             }
         },
         {
@@ -407,7 +420,8 @@
             "properties": {
                 "elevation": 1080.05,
                 "name": "S26",
-                "next": "S27"
+                "next": "S27",
+                "radius": 406.6
             }
         },
         {
@@ -452,7 +466,8 @@
             "properties": {
                 "name": "S29",
                 "next": "S30",
-                "elevation": 1070.39
+                "elevation": 1070.39,
+                "radius": 89.8
             }
         },
         {
@@ -497,7 +512,8 @@
             "properties": {
                 "name": "S32",
                 "next": "S33",
-                "elevation": 1051.36
+                "elevation": 1051.36,
+                "radius": 305
             }
         },
         {
@@ -527,7 +543,8 @@
             "properties": {
                 "name": "S34",
                 "next": "S8",
-                "elevation": 1072.46
+                "elevation": 1072.46,
+                "radius": 203.7
             }
         },
         {
@@ -542,7 +559,8 @@
             "properties": {
                 "name": "S35",
                 "next": "S36",
-                "elevation": 1068.99
+                "elevation": 1068.99,
+                "radius": 120.5
             }
         },
         {
@@ -556,7 +574,7 @@
             },
             "properties": {
                 "name": "S36",
-                "next": "S32",
+                "next": "S55",
                 "elevation": 1067.24
             }
         },
@@ -571,9 +589,9 @@
             },
             "properties": {
                 "name": "S37",
-                "left": "S9",
+                "next": "S38",
                 "elevation": 1081.08,
-                "right": "S38"
+                "radius": 109.5
             }
         },
         {
@@ -603,7 +621,8 @@
             "properties": {
                 "name": "S39",
                 "next": "S40",
-                "elevation": 1072.01
+                "elevation": 1072.01,
+                "radius": 70.9
             }
         },
         {
@@ -633,7 +652,8 @@
             "properties": {
                 "name": "S41",
                 "next": "S42",
-                "elevation": 1085.34
+                "elevation": 1085.34,
+                "radius": 257.2
             }
         },
         {
@@ -663,7 +683,8 @@
             "properties": {
                 "name": "S43",
                 "next": "S44",
-                "elevation": 1091.04
+                "elevation": 1091.04,
+                "radius": 83.6
             }
         },
         {
@@ -677,8 +698,9 @@
             },
             "properties": {
                 "name": "S43",
-                "next": "S13",
-                "elevation": 1091.7
+                "next": "S14",
+                "elevation": 1091.7,
+                "radius": 243.7
             }
         },
         {
@@ -708,7 +730,8 @@
             "properties": {
                 "name": "S45",
                 "next": "S46",
-                "elevation": 1078.07
+                "elevation": 1078.07,
+                "radius": 79.8
             }
         },
         {
@@ -738,7 +761,8 @@
             "properties": {
                 "name": "S47",
                 "elevation": 1079.74,
-                "next": "S48"
+                "next": "S48",
+                "radius": 76.6
             }
         },
         {
@@ -746,14 +770,14 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -95.677103,
-                    38.929506
+                    -95.677107,
+                    38.929566
                 ]
             },
             "properties": {
                 "name": "S48",
                 "next": "S49",
-                "elevation": 1080.85
+                "elevation": 1080.75
             }
         },
         {
@@ -768,7 +792,8 @@
             "properties": {
                 "name": "S49",
                 "next": "S50",
-                "elevation": 1078.22
+                "elevation": 1078.22,
+                "radius": 500
             }
         },
         {
@@ -776,14 +801,94 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -95.676359,
-                    38.925396
+                    -95.676269,
+                    38.925219
                 ]
             },
             "properties": {
                 "name": "S50",
                 "next": "S3",
-                "elevation": 1078.18
+                "elevation": 1079.91
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -95.675739,
+                    38.92254
+                ]
+            },
+            "properties": {
+                "name": "S53",
+                "next": "S44",
+                "radius": 91.7,
+                "elevation": 1068.61
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -95.67573,
+                    38.922736
+                ]
+            },
+            "properties": {
+                "name": "S51",
+                "next": "S6",
+                "radius": 684.6,
+                "elevation": 1069.31
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -95.675741,
+                    38.922714
+                ]
+            },
+            "properties": {
+                "name": "S52",
+                "next": "S28",
+                "radius": 253.3,
+                "elevation": 1068.89
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -95.675207,
+                    38.921479
+                ]
+            },
+            "properties": {
+                "name": "S54",
+                "next": "S8",
+                "radius": 403.9,
+                "elevation": 1072.03
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -95.676877,
+                    38.921564
+                ]
+            },
+            "properties": {
+                "name": "S55",
+                "next": "S31",
+                "radius": 189.1,
+                "elevation": 1065.11
             }
         }
     ]

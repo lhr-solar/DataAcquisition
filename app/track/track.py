@@ -39,11 +39,11 @@ class Track:
         match = lambda s: self._getPoint(p1)["properties"]["name"] == s
         if(match("S5")):
             return self._getPoint(p1)["properties"][self.fork1]
-        if(match("S37")):
+        if(match("S8")):
             return self._getPoint(p1)["properties"][self.fork2]
-        if(match("S11")):
+        if(match("S10")):
             return self._getPoint(p1)["properties"][self.fork3]
-        if(match("S22")):
+        if(match("S21")):
             if(self.pit == "pit"):
                 self.pit = "nopit"
                 return self._getPoint(p1)["properties"]["pit"]
@@ -55,13 +55,21 @@ class Track:
         self.curr = self.getNext()
 
     # returns something like -0.25% slope
-    def getPercentSlope(self, p1, p2):
+    def getPercentSlope(self, p1=None, p2=None):
+        if(p1 == None and p2 == None):
+            p1 = self.curr
+            p2 = self.getNext()
         return (
             100 * (self._getElevation(p2) - self._getElevation(p1))
             / (self.getDistance(p1, p2))
         )
-
-    # gets distance from A to B and supports paths
+    # gets turning radius of next segment in feet
+    def getRadius(self, p1=None):
+        if(p1 == None):
+            p1 = self.curr
+        return self._getPoint(p1)["properties"]["radius"]
+    
+    # gets distance in feet from A to B and supports paths
     def getDistance(self, p1, p2):
         distance = 0
         dest = p2
@@ -89,8 +97,12 @@ class Track:
         lat2, lon2 = self._getCoords(p2)
         x = 288200 * (lon2 - lon1)
         y = 364000 * (lat2 - lat1)
-        return math.sqrt(x * x + y * y)
-
+        d = math.sqrt(x * x + y * y)
+        if("radius" in self._getPoint(p1)["properties"]):
+            r = self.getRadius(p1)
+            return 2*r*math.asin(d/(2*r))
+        return d
+    
 
 t = Track("dynamic")
 t.setForks("left", "left", "left")
@@ -105,4 +117,4 @@ print("shortest track length: " + str(t.getDistance("S0", "S0"))) #
 t.pitNext()
 print("above length with pit lap: " + str(t.getDistance("S0", "S0"))) # this inherently 2 laps to make it to the finish line after a pit
 t.setForks("right", "right", "right")
-print("longest track length: " + str(t.getDistance("S0", "S0")))
+print("longest track length: " + str(t.getDistance("S0", "S0")/5280))
