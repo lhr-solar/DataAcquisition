@@ -1,4 +1,4 @@
-import json
+import geojson
 import math
 
 class Track:
@@ -14,7 +14,7 @@ class Track:
     # 
     def __init__(self, trackName):
         with open("app/track/" + trackName + ".geojson", "r") as f:
-            self.track = json.load(f)
+            self.track = geojson.load(f)
         for i in range(len(self.track["features"])):
             self.name.update({self.track["features"][i]["properties"]["name"]: i})
     
@@ -81,17 +81,38 @@ class Track:
             p2 = self.getNext(p2)
         return distance + self._getDirectDistance(p1, p2)
 
+    def generateMinimap(self):
+        line = geojson.LineString([])
+        start = self.getCurr()
+        while self.getNext(self.getCurr()) != start:
+            lat, lon = self._getCoords()
+            line["coordinates"].append([lon, lat])
+            self.goNext()
+        lat, lon = self._getCoords()
+        line["coordinates"].append([lon, lat])
+        self.goNext()
+        f = geojson.Feature(geometry=line)
+        fc = geojson.FeatureCollection([f])
+        with open("app/track/minimap.geojson", "w") as f:
+            geojson.dump(fc, f, indent=4)
+
     # private functions you shouldn't have to use
-    def _getPoint(self, p1):
+    def _getPoint(self, p1=None):
+        if(p1 == None):
+            p1 = self.curr
         return self.track["features"][self.name[p1]]
 
-    def _getCoords(self, p1):
+    def _getCoords(self, p1=None):
+        if(p1 == None):
+            p1 = self.curr
         return (
             self._getPoint(p1)["geometry"]["coordinates"][1],
             self._getPoint(p1)["geometry"]["coordinates"][0]
         )
 
-    def _getElevation(self, p1):
+    def _getElevation(self, p1=None):
+        if(p1 == None):
+            p1 = self.curr
         return self._getPoint(p1)["properties"]["elevation"]
 
     def _getDirectDistance(self, p1, p2):
@@ -105,18 +126,22 @@ class Track:
             return 2*r*math.asin(d/(2*r))
         return d
     
+# testing
+def test():
+    t = Track("dynamic")
+    t.setForks("left", "left", "left")
 
-t = Track("dynamic")
-t.setForks("left", "left", "left")
-
-while t.getNext(t.getCurr()) != "S0":
+    while t.getNext(t.getCurr()) != "S0":
+        print(t.getCurr())
+        t.goNext()
     print(t.getCurr())
     t.goNext()
-print(t.getCurr())
-t.goNext()
 
-print("shortest track length: " + str(t.getDistance("S0", "S0"))) #
-t.pitNext()
-print("above length with pit lap: " + str(t.getDistance("S0", "S0"))) # this inherently 2 laps to make it to the finish line after a pit
-t.setForks("right", "right", "right")
-print("longest track length: " + str(t.getDistance("S0", "S0")/5280))
+    print("shortest track length: " + str(t.getDistance("S0", "S0"))) #
+    t.pitNext()
+    print("above length with pit lap: " + str(t.getDistance("S0", "S0"))) # this inherently 2 laps to make it to the finish line after a pit
+    t.setForks("right", "right", "right")
+    print("longest track length: " + str(t.getDistance("S0", "S0")/5280))
+    t.generateMinimap()
+
+test()
