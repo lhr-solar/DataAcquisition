@@ -1,5 +1,8 @@
 import geojson
 import math
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import interpolate
 
 class Track:
 
@@ -88,13 +91,39 @@ class Track:
             lat, lon = self._getCoords()
             line["coordinates"].append([lon, lat])
             self.goNext()
-        lat, lon = self._getCoords()
-        line["coordinates"].append([lon, lat])
-        self.goNext()
+        for i in range(2):
+            lat, lon = self._getCoords()
+            line["coordinates"].append([lon, lat])
+            self.goNext()
         f = geojson.Feature(geometry=line)
         fc = geojson.FeatureCollection([f])
         with open("app/track/minimap.geojson", "w") as f:
             geojson.dump(fc, f, indent=4)
+    
+    # WIP curves need to be more tangent-like
+    def interpolateMinimap(self):
+        x = []
+        y = []
+        start = self.getCurr()
+        while self.getNext(self.getCurr()) != start:
+            lat, lon = self._getCoords()
+            x.append(lon)
+            y.append(lat)
+            self.goNext()
+        lat, lon = self._getCoords()
+        x.append(lon)
+        y.append(lat)
+        self.goNext()
+
+        tck, u = interpolate.splprep([x, y], s=0)
+        unew = np.arange(0, 1, .01)
+        out = interpolate.splev(unew, tck)
+        plt.figure()
+        plt.plot(x, y, 'x', out[0], out[1], x, y, 'b')
+        plt.legend(['Linear', 'Cubic Spline', 'True'])
+        plt.axis([-95.68512414004034, -95.6651136503342, 38.917864784928895, 38.93202447381995])
+        plt.title('Spline of parametrically-defined curve')
+        plt.show()
 
     # private functions you shouldn't have to use
     def _getPoint(self, p1=None):
@@ -142,6 +171,7 @@ def test():
     print("above length with pit lap: " + str(t.getDistance("S0", "S0"))) # this inherently 2 laps to make it to the finish line after a pit
     t.setForks("right", "right", "right")
     print("longest track length: " + str(t.getDistance("S0", "S0")/5280))
-    t.generateMinimap()
+    # t.generateMinimap()
+    t.interpolateMinimap()
 
 test()

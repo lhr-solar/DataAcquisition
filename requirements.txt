@@ -12,6 +12,7 @@ importlib-metadata==4.8.1
 influxdb-client==1.21.0
 Jinja2==3.0.1
 MarkupSafe==2.0.1
+matplotlib
 pandas
 pydantic==1.8.2
 pypugjs==5.9.9
