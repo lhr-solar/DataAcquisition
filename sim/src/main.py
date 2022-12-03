@@ -86,7 +86,7 @@ CAN_Test_Data = [
 
 #                          1         2         3         4         5
 #                0123456789012345678901234567890123456789012345678901
-GPS_Test_Data = "064951000A3855.5137N09540.4829W30.4141.482604063.05W"
+GPS_Test_Data = "064951000A3855.514N09540.483W0.00122.110000000000000"
 # 38.9252284 -95.6747154 topeka coords
 
 IMU_Test_Data = [                                                                           # Accelerometer:Magnetometer:Gyroscope           
