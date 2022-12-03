@@ -15,7 +15,7 @@ PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 IMU_ID = 1
 GPS_ID = 2
 CAN_ID = 3
-logging.basicConfig(level=logging.WARNING, format='%(message)s')
+# logging.basicConfig(level=logging.WARNING, format='%(message)s')
 
 def connect_socket(s: socket) -> socket:
 
@@ -50,11 +50,13 @@ def receiver():
     while True:
         try:
             if conn.recv_into(buf, 2) == 0:
+                logging.warning("Empty")
                 raise ServerDisconnectError
             
             ethID = int.from_bytes([buf[0]], "little")
             length = int.from_bytes([buf[1]], "little")
             if ethID not in parser:
+                logging.warning("Wrong ID")
                 raise ServerDisconnectError
 
             # put CAN/IMU/GPS message into bytearray
@@ -64,6 +66,7 @@ def receiver():
             while i < length:
                 recv_len = conn.recv_into(buf, length-i)
                 if recv_len == 0:
+                    logging.warning("Empty Packet")
                     raise ServerDisconnectError
                 r[i:recv_len+i] = buf[:recv_len]
                 i += recv_len

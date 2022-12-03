@@ -4,7 +4,7 @@ import logging
 def GPSparse(data):
 
     data = ['0' if i == 0 else chr(i) for i in data]
-    # logging.debug(data)
+    logging.debug(data)
 
     #lat and lon is recognized by influxdb in order to show gui with map
     #converting GPS input to decimal degrees is required
