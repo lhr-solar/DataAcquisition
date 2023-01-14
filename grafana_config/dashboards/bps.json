@@ -274,10 +274,70 @@
         "view": {
           "allLayers": true,
           "id": "coords",
-          "lat": 38.925,
-          "lon": -95.67399292796479,
-          "zoom": 15.3
+          "lat": 30.2899166667,
+          "lon": -97.7358666667,
+          "zoom": 17
         }
+      },
+      "pluginVersion": "9.1.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"GPS\")\r\n  |> filter(fn: (r) => r._field == \"lat\" or r._field == \"lon\")\r\n|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Heartland Motorsports Park",
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 10,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 18,
+        "x": 4,
+        "y": 1
+      },
+      "id": 85,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
       "pluginVersion": "9.1.7",
       "targets": [
@@ -291,7 +351,7 @@
         }
       ],
       "title": "Heartland Motorsports Park",
-      "type": "geomap"
+      "type": "stat"
     },
     {
       "datasource": {
@@ -356,7 +416,7 @@
         "h": 7,
         "w": 20,
         "x": 4,
-        "y": 1
+        "y": 8
       },
       "id": 75,
       "options": {
@@ -447,7 +507,7 @@
         "h": 8,
         "w": 6,
         "x": 4,
-        "y": 8
+        "y": 15
       },
       "id": 77,
       "options": {
@@ -590,7 +650,7 @@
         "h": 8,
         "w": 7,
         "x": 10,
-        "y": 8
+        "y": 15
       },
       "id": 78,
       "options": {
@@ -733,7 +793,7 @@
         "h": 8,
         "w": 7,
         "x": 17,
-        "y": 8
+        "y": 15
       },
       "id": 79,
       "options": {
@@ -824,7 +884,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 23
       },
       "id": 39,
       "panels": [],
@@ -886,7 +946,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 17
+        "y": 24
       },
       "id": 41,
       "options": {
@@ -975,7 +1035,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 24
       },
       "id": 43,
       "options": {
@@ -1015,7 +1075,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 31
       },
       "id": 35,
       "panels": [],
@@ -1064,8 +1124,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1077,7 +1136,7 @@
         "h": 6,
         "w": 7,
         "x": 0,
-        "y": 25
+        "y": 32
       },
       "id": 45,
       "options": {
@@ -1162,8 +1221,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1175,7 +1233,7 @@
         "h": 6,
         "w": 7,
         "x": 7,
-        "y": 25
+        "y": 32
       },
       "id": 46,
       "options": {
@@ -1235,8 +1293,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1251,7 +1308,7 @@
         "h": 6,
         "w": 10,
         "x": 14,
-        "y": 25
+        "y": 32
       },
       "id": 48,
       "options": {
@@ -1353,7 +1410,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 31
+        "y": 38
       },
       "id": 25,
       "options": {
@@ -1425,7 +1482,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 31
+        "y": 38
       },
       "id": 24,
       "options": {
@@ -1515,7 +1572,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 31
+        "y": 38
       },
       "id": 18,
       "options": {
@@ -1553,7 +1610,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 37
+        "y": 44
       },
       "id": 50,
       "panels": [],
@@ -1614,7 +1671,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 38
+        "y": 45
       },
       "id": 52,
       "options": {
@@ -1719,7 +1776,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 38
+        "y": 45
       },
       "id": 54,
       "options": {
@@ -1809,7 +1866,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 38
+        "y": 45
       },
       "id": 55,
       "options": {
@@ -1880,7 +1937,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 44
+        "y": 51
       },
       "id": 58,
       "options": {
@@ -1953,7 +2010,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 44
+        "y": 51
       },
       "id": 59,
       "options": {
@@ -2045,7 +2102,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 44
+        "y": 51
       },
       "id": 60,
       "options": {
@@ -2113,7 +2170,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 50
+        "y": 57
       },
       "id": 62,
       "options": {
@@ -2185,7 +2242,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 50
+        "y": 57
       },
       "id": 63,
       "options": {
@@ -2288,7 +2345,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 50
+        "y": 57
       },
       "id": 64,
       "options": {
@@ -2387,7 +2444,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 56
+        "y": 63
       },
       "id": 65,
       "options": {
@@ -2486,7 +2543,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 56
+        "y": 63
       },
       "id": 66,
       "options": {
@@ -2576,7 +2633,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 56
+        "y": 63
       },
       "id": 67,
       "options": {
@@ -2614,7 +2671,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 62
+        "y": 69
       },
       "id": 33,
       "panels": [],
@@ -2675,7 +2732,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 63
+        "y": 70
       },
       "id": 37,
       "options": {
@@ -2751,7 +2808,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 63
+        "y": 70
       },
       "id": 80,
       "options": {
@@ -2858,7 +2915,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 63
+        "y": 70
       },
       "id": 27,
       "options": {
@@ -2958,7 +3015,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 70
+        "y": 77
       },
       "id": 31,
       "options": {
@@ -3076,7 +3133,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 70
+        "y": 77
       },
       "id": 29,
       "options": {
@@ -3132,7 +3189,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "100ms",
+  "refresh": "500ms",
   "schemaVersion": 37,
   "style": "dark",
   "tags": [],
@@ -3140,7 +3197,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -3163,6 +3220,6 @@
   "timezone": "",
   "title": "BPS - Longhorn Racing",
   "uid": "RcFrQLv7k",
-  "version": 14,
+  "version": 15,
   "weekStart": ""
 }
