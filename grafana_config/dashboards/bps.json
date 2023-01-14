@@ -273,10 +273,10 @@
         },
         "view": {
           "allLayers": true,
-          "id": "coords",
+          "id": "fit",
           "lat": 38.925,
           "lon": -95.67399292796479,
-          "zoom": 15.3
+          "zoom": 15
         }
       },
       "pluginVersion": "9.1.7",
@@ -292,6 +292,126 @@
       ],
       "title": "Heartland Motorsports Park",
       "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 10,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 10,
+        "x": 4,
+        "y": 1
+      },
+      "id": 85,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^lat \\{_start=\"2023\\-01\\-14 21:06:29\\.208 \\+0000 UTC\", _stop=\"2023\\-01\\-14 21:07:29\\.208 \\+0000 UTC\"\\}$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"GPS\")\r\n  |> filter(fn: (r) => r._field == \"lat\" or r._field == \"lon\")\r\n  |> last()\r\n|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Latitude",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 10,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 10,
+        "x": 14,
+        "y": 1
+      },
+      "id": 86,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^lon \\{_start=\"2023\\-01\\-14 21:08:08\\.842 \\+0000 UTC\", _stop=\"2023\\-01\\-14 21:09:08\\.842 \\+0000 UTC\"\\}$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.1.7",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "query": "from(bucket: \"LHR\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"GPS\")\r\n  |> filter(fn: (r) => r._field == \"lat\" or r._field == \"lon\")\r\n  |> last()\r\n|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Longitude",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -353,10 +473,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 6,
         "w": 20,
         "x": 4,
-        "y": 1
+        "y": 4
       },
       "id": 75,
       "options": {
@@ -444,10 +564,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 6,
+        "h": 6,
+        "w": 7,
         "x": 4,
-        "y": 8
+        "y": 10
       },
       "id": 77,
       "options": {
@@ -587,10 +707,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 7,
-        "x": 10,
-        "y": 8
+        "h": 6,
+        "w": 6,
+        "x": 11,
+        "y": 10
       },
       "id": 78,
       "options": {
@@ -730,10 +850,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 6,
         "w": 7,
         "x": 17,
-        "y": 8
+        "y": 10
       },
       "id": 79,
       "options": {
@@ -3132,7 +3252,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "100ms",
+  "refresh": "500ms",
   "schemaVersion": 37,
   "style": "dark",
   "tags": [],
@@ -3140,7 +3260,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1m",
     "to": "now"
   },
   "timepicker": {
@@ -3163,6 +3283,6 @@
   "timezone": "",
   "title": "BPS - Longhorn Racing",
   "uid": "RcFrQLv7k",
-  "version": 14,
+  "version": 18,
   "weekStart": ""
 }
