@@ -15,7 +15,7 @@ PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 IMU_ID = 1
 GPS_ID = 2
 CAN_ID = 3
-# logging.basicConfig(level=logging.WARNING, format='%(message)s')
+logging.basicConfig(level=logging.WARNING, format='%(message)s')
 
 def connect_socket(s: socket) -> socket:
 
