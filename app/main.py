@@ -17,20 +17,26 @@ GPS_ID = 2
 CAN_ID = 3
 # logging.basicConfig(level=logging.WARNING, format='%(message)s')
 
-def reconnect_socket(client: socket) -> socket:
+def connect_socket(s: socket) -> socket:
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((HOST, PORT))
+    s.setblocking(True)
+    logging.debug(f"Client connected to {HOST}")
+
+def reconnect_socket(s: socket) -> socket:
     
-    logging.warning("Client disconnect")
-    client.close()
-    logging.debug("Client reconnecting...")
-    return socket.create_connection(address=(HOST, PORT))
+    logging.warning("Client Disconnected")
+    s.close()
+    connect_socket(s)
 
 class ClientDisconnectError(Exception): pass
 
 def receiver():
 
-    s = socket.create_connection(address=(HOST, PORT))
-    logging.debug("Client starting...")
-    s.setblocking(True)
+    logging.debug(f"Client starting...")
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    connect_socket(s)
 
     client = InfluxDBClient(url="http://influxdb:8086", token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(), org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip())
     logging.debug("created client")
@@ -65,7 +71,7 @@ def receiver():
             
             write_api.write(bucket="LHR", record=parser[ethID](r))
         except ClientDisconnectError:
-            s = reconnect_socket(s)
+            reconnect_socket(s)
 
         
 if __name__ == "__main__":
