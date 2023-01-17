@@ -1,12 +1,11 @@
 version: "3.8"
-
 services:
   influxdb:
     container_name: influxdb
     image: influxdb:latest
+    restart: always
     env_file:
       - .env
-    restart: always
     volumes:
       - influxdb:/var/lib/influxdb2
     ports:
@@ -21,11 +20,11 @@ services:
      - GF_INSTALL_PLUGINS=pr0ps-trackmap-panel
     volumes:
       - grafana_storage:/var/lib/grafana
-      - ./grafana_config/grafana.ini:/etc/grafana/grafana.ini
-      - ./grafana_config/influxdb.yaml:/etc/grafana/provisioning/datasources/influxdb.yaml
-      - ./grafana_config/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
-      - ./grafana_config/dashboards:/var/lib/grafana/dashboards
-      - ./app/track:/usr/share/grafana/public/maps
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/influxdb.yaml:/etc/grafana/provisioning/datasources/influxdb.yaml
+      - ./grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/track:/usr/share/grafana/public/maps
     ports:
       - 3000:3000
     depends_on:
@@ -33,46 +32,38 @@ services:
   app:
     container_name: app
     image: dataacquisition_app:latest
-    build:
-      context: .
-      args:
-        reload: 1
     restart: always
+    build:
+      context: ./app
     env_file:
       - .env
+    volumes:
+      - type: bind
+        source: ./app
+        target: /app
+    working_dir: /app
     ports:
-    # please use this for the actual telemetry board
-      - 169.254.48.219:65432:65432 #This is the IP address that the telemetry system connects to
-    volumes: 
-      - ./app:/lhr-pi/app
+      - 169.254.48.219:65432:65432 # This is the IP address that the telemetry system connects to
     depends_on:
       - influxdb
-  # telemetry:
-  #   container_name: telemetry
-  #   image: dataacquisition_telemetry:latest
-  #   build:
-  #     context: ./sim
-  #     args:
-  #       reload: 1
-  #   restart: always
-  #   ports:
-  #     - 65433:65433
-  #   volumes: 
-  #     - ./sim/src:/telemetry/src
-  #   depends_on:
-  #     - app
-  nginx:
-    container_name: nginx
-    image: nginx:latest
-    restart: unless-stopped 
-    env_file:
-      - .env
-    ports: 
-      - 80:80
+  # use with docker-compose --profile sim up --build
+  sim:
+    container_name: sim
+    image: dataacquisition_sim:latest
+    restart: always
+    build:
+      context: ./sim
+    ports:
+      - 65433:65433
     volumes:
-      - ./nginx_templates:/etc/nginx/templates
+      - type: bind
+        source: ./sim
+        target: /sim
+    working_dir: /sim
     depends_on:
       - app
+    profiles:
+      - sim
   watchtower:
     image: containrrr/watchtower
     container_name: watchtower

@@ -88,8 +88,8 @@ def CANparse(data):
         logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][2] + ": " + str(packet[2]) + "\n")
 
     return (Point(CANIDs[canID][0]).field(packet[0], packet[1]) #return just index and data
-            if (packet[2] == 0) 
-            else 
-                [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
-                for i in [1,2]] 
-            )
+        if (packet[2] == 0)
+        else 
+            [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
+            for i in [1,2]] 
+    )

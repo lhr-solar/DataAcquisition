@@ -95,52 +95,72 @@ IMU_Test_Data = [                                                               
     bytearray(b'\xfa\xfe\x01\x00\xbe\x03\x82\xfc\xaa\xfe\xcc\xfc\xf3\xff\xfa\xff\x0b\x00'), #-262, 1, 958:-894, -342, -820:-13, -6, 11
 ]   
 
-HOST = 'app'
+HOST = "app"
 PORT = 65432
-eth_header_CAN = [0x03, 0x10]
-eth_header_GPS = [0x02, 0x34]
 eth_header_IMU = [0x01, 0x12]
+eth_header_GPS = [0x02, 0x34]
+eth_header_CAN = [0x03, 0x10]
+
 
 def generateGPS(lat, lon, speed) -> bytearray:
-    gps = "064951000A" + f'{int(abs(lat)):02}' + f'{(abs(lat)%1)*60:02.4f}' + ("N" if lat > 0 else "S") + f'{int(abs(lon)):03}' + f'{(abs(lon)%1)*60:02.4f}' + ("E" if lon > 0 else "W") + f'{speed/1.15078:02.4f}' + ".482604063.05W"
+    gps = (
+        "064951000A"
+        + f"{int(abs(lat)):02}"
+        + f"{(abs(lat)%1)*60:06.3f}"
+        + ("N" if lat > 0 else "S")
+        + f"{int(abs(lon)):03}"
+        + f"{(abs(lon)%1)*60:06.3f}"
+        + ("E" if lon > 0 else "W")
+        + "0.00"
+        + f"{(speed/1.15078):06.2f}"
+        + "0000000000000"
+    )
     return bytearray(eth_header_GPS) + gps.encode()
+
 
 def generateIMU(lower, upper) -> bytearray:
     buf = bytearray(20)
-    struct.pack_into('bb', buf, 0, eth_header_IMU[0], eth_header_IMU[1])
+    struct.pack_into("bb", buf, 0, eth_header_IMU[0], eth_header_IMU[1])
     for i in range(1, 10):
-        struct.pack_into('h', buf, i*2, random.randrange(lower, upper))
+        struct.pack_into("h", buf, i * 2, random.randrange(lower, upper))
     return buf
+
 
 def move(start, target):
     if move.count == 30:
         move.lat, move.lon = start
     if move.count > 0:
-        move.lat += (abs(target[0]-start[0]))/30 * (-1 if target[0] < start[0] else 1)
-        move.lon += (abs(target[1]-start[1]))/30 * (-1 if target[1] < start[1] else 1)
+        move.lat += (abs(target[0] - start[0])) / 30 * (-1 if target[0] < start[0] else 1)
+        move.lon += (abs(target[1] - start[1])) / 30 * (-1 if target[1] < start[1] else 1)
         move.count -= 1
         return generateGPS(move.lat, move.lon, 40)
+
+
 move.count = 30
 move.lat = 0
 move.lon = 0
+
 
 def reconnect_socket(client: socket) -> socket:
 
     logging.warning("Client disconnect")
     client.close()
-    logging.debug("Client reconnecting...")
+    logging.warning("Client reconnecting...")
     return socket.create_connection(address=(HOST, PORT))
 
-class ServerDisconnectError(Exception): pass
 
-#This is the only function that should be called outside of this file. Other functions will be called within this function
+class ClientDisconnectError(Exception):
+    pass
+
+
+# This is the only function that should be called outside of this file. Other functions will be called within this function
 def sender():
     s = socket.create_connection(address=(HOST, PORT))
-    logging.debug("Client starting...")
+    logging.warning("Client starting...")
     s.setblocking(True)
     while True:
         try:
-            for i in CAN_Test_Data: 
+            for i in CAN_Test_Data:
                 s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]))
             logging.debug("CAN sent.")
             s.sendall(move((38.92959, -95.677242), (38.926558, -95.676713)))
@@ -148,11 +168,11 @@ def sender():
             s.sendall(generateIMU(-1000, 1000))
             logging.debug("IMU sent.")
             time.sleep(1)
-            
-        except:
+
+        except ClientDisconnectError:
             s = reconnect_socket(s)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     sender()
-    pass

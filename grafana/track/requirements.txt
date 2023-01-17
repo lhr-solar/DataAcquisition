@@ -1,0 +1,4 @@
+geojson==2.5.0
+matplotlib
+requests
+scipy

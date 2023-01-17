@@ -1,6 +1,7 @@
 from influxdb_client import Point
 import logging
 
+
 def GPSparse(data):
 
     data = ['0' if i == 0 else chr(i) for i in data]
@@ -14,6 +15,6 @@ def GPSparse(data):
             'MPH':          lambda i: float(i[30:34]) * 1.15078
     }
     for key in gps:
-            logging.debug(str(key) + ": " + str(gps[key](''.join(data))))
+        logging.debug(str(key) + ": " + str(gps[key]("".join(data))))
     logging.debug("\n")
     return [Point("GPS").field(key, gps[key](''.join(data))) for key in gps]
