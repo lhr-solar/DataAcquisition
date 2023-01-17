@@ -2,6 +2,7 @@ import struct
 import logging
 from influxdb_client import Point
 
+
 def float_func(load):
     return struct.unpack('<If', load[0:8]) + (0,)
 
@@ -22,6 +23,7 @@ def two_word_func(load):
 
 def index_func(load):
     return struct.unpack('<II', load[0:8]) + (0,)
+
 
 CANIDs = {
     0x001: ["Dash Kill Switch",                                 unsigned_func],
@@ -76,7 +78,9 @@ CANIDs = {
     0x640: ["PV Curve Tracer Profile",                          unsigned_func]
 }
 
+
 def CANparse(data):
+    
     logging.debug(data)
     canID = int.from_bytes(data[0:4], "little")
     logging.debug(canID)

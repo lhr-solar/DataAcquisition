@@ -47,6 +47,7 @@ services:
     depends_on:
       - influxdb
   # use with docker-compose --profile sim up --build
+  # must remove up from app ports
   sim:
     container_name: sim
     image: dataacquisition_sim:latest
