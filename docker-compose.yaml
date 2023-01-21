@@ -43,11 +43,12 @@ services:
         target: /app
     working_dir: /app
     ports:
-      - 169.254.48.219:65432:65432 # This is the IP address that the telemetry system connects to
+      - 169.254.48.219:65432:65432 # This is the IP address that the telemetry system directly connects to
+      # - 192.168.1.221:65432:65432 # Radio
     depends_on:
       - influxdb
   # use with docker-compose --profile sim up --build
-  # must remove up from app ports
+  # must remove ip from app ports
   sim:
     container_name: sim
     image: dataacquisition_sim:latest
