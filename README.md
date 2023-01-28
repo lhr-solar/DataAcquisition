@@ -1,11 +1,5 @@
 # Getting Started
 
-## Installing on a Raspberry Pi
-
-Pre-requirements:
-
-- 64bit Raspberry PI OS
-
 ### Install Docker
 
 [Docker Installation Guide](https://docs.docker.com/engine/install/debian/)
@@ -47,15 +41,17 @@ Note: `uname -s`and `uname -m` outputs are weird on Raspberry Pis resulting in i
 
 ### Git Clone and Run
 
-Ensure that you are not connected to a network! This is mostly easily done through using VNC Viewer to disconnect from your WiFi network. Do not disable the Wifi adapter though.
-
 Git clone
 ```bash
-git clone https://github.com/lanc33llis/lhr-pi
+git clone https://github.com/lhr-solar/DataAcquisition
 ```
-Run it!
+Make sure Docker Desktop is open then run it!
 
 ```bash
-cd lhr-pi #if you're not already in the directory
-sudo docker-compose up
+cd DataAcquisition #if you're not already in the directory
+docker-compose up --build
 ```
+
+### Grafana
+
+Open localhost:3000, login, then navigate to the BPS dashboard.
