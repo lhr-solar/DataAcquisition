@@ -45,6 +45,7 @@ CANIDs = {
     0x10C: ["Charging Enabled",                                 unsigned_func],
 
     0x580: ["Car State",                                        unsigned_func],     #not used
+    0x581: ["Car Data",                                         unsigned_func],
     0x242: ["Motor Controller Bus", "Current", "Voltage",       two_word_func],
     0x243: ["Velocity", "m/s", "rpm",                           two_word_func],
     0x244: ["Motor Controller Phase Current", "B", "C",         two_word_func],
@@ -70,11 +71,11 @@ CANIDs = {
     0x615: ["Sunscatter B Override command",                    unsigned_func],
     0x616: ["Sunscatter B Fault",                               unsigned_func],
 
-    0x620: ["Blackbody Measurement",                            index_func],
-    0x630: ["Blackbody 1 Measurement",                          float_func],
-    0x631: ["Blackbody 2 Measurement",                          float_func],
-    0x632: ["Blackbody Board command",                          unsigned_func],
-    0x633: ["Blackbody Board Fault",                            unsigned_func],
+    0x620: ["Blackbody RTD Sensor Measurement",                 index_func],
+    0x630: ["Blackbody Irradiance Sensor 1 Measurement",        float_func],
+    0x631: ["Blackbody Irradiance Sensor 2 Measurement",        float_func],
+    0x632: ["Blackbody Irradiance Board command",               unsigned_func],
+    0x633: ["Blackbody Irradiance Board Fault",                 unsigned_func],
     0x640: ["PV Curve Tracer Profile",                          unsigned_func]
 }
 
