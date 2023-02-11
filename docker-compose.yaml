@@ -43,8 +43,7 @@ services:
         target: /app
     working_dir: /app
     ports:
-      - 169.254.48.219:65432:65432 # This is the IP address that the telemetry system directly connects to
-      # - 192.168.1.221:65432:65432 # Radio
+      - 192.168.1.224:65432:65432 # This is the IP address that the telemetry system directly connects to
     depends_on:
       - influxdb
   # use with docker-compose --profile sim up --build
