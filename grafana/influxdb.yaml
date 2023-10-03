@@ -16,5 +16,3 @@ datasources:
       organization: $DOCKER_INFLUXDB_INIT_ORG
       httpHeaderName1: 'Authorization'
       tlsSkipVerify: true
-    secureJsonData:
-      httpHeaderValue1: 'Token $DOCKER_INFLUXDB_INIT_ADMIN_TOKEN'

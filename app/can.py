@@ -81,11 +81,11 @@ CANIDs = {
 
 
 def CANparse(data):
-    
+    # print("Data in CANparse: ", data) # ^ I added for test
     logging.debug(data)
     canID = int.from_bytes(data[0:4], "little")
     logging.debug(canID)
-    packet = CANIDs[canID][-1](data[4:])
+    packet = CANIDs[canID][-1](data[4:])  # calling the function to parse the data based on return type
     if (packet[2] == 0):
         logging.debug(CANIDs[canID][0] + ": " + str(packet[1]) + "\n")
     else:
