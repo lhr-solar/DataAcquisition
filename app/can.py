@@ -44,7 +44,7 @@ CANIDs = {
     0x10B: ["Supplemental Voltage",                             unsigned_func],
     0x10C: ["Charging Enabled",                                 unsigned_func],
 
-    0x580: ["Car State",                                        unsigned_func],     #not used
+    0x580: ["CONTROL_MODE",                                     unsigned_func],      #int enum
     0x581: ["Car Data",                                         unsigned_func],
     0x242: ["Motor Controller Bus", "Current", "Voltage",       two_word_func],
     0x243: ["Velocity", "m/s", "rpm",                           two_word_func],
