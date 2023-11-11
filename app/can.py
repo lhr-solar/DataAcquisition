@@ -27,6 +27,14 @@ def index_func(load):
 def four_byte_func(load):
     return struct.unpack('<IBBBB', load[0:8]) + (0,)
 
+def motor_status_func(load):
+    idx = struct.unpack('<I', load[0:4])
+    limit_flags = [int(i) for i in bin(int.from_bytes(load[4:6], byteorder='little', signed=False))[2:]]
+    limit_flags = limit_flags[0:7]
+    error_flags = [int(i) for i in bin(int.from_bytes(load[6:8], byteorder='little', signed=False))[2:]]
+    error_flags = error_flags[0:9]
+    data = struct.unpack('<HBB', load[8:12])
+    return idx + tuple(limit_flags) + tuple(error_flags) + tuple(data)
 
 CANIDs = {
     0x001: ["Dash Kill Switch",                                 unsigned_func],
@@ -52,6 +60,18 @@ CANIDs = {
             "Switch Bitmap", "Contactor Bitmap",                four_byte_func],
     0x240: ["Motor Controller Identification", "Prohelion ID",
             "Device serial number",                             two_word_func],
+    0x241: ["Motor Status", "Output Voltage PWM",
+            "Motor Current", "Velocity", "Bus Current",
+            "Bus Voltage Upper Limit", "Bus Voltage Lower Limit",
+            "IPM or Motor Temperature",
+            "Hardware over current",
+            "Software over current", "DC Bus over voltage",
+            "Bad motor position hall sequence",
+            "Watchdog caused last reset", "Config read error",
+            "15V rail under voltage lock out",
+            "Desaturation fault", "Motor Over Speed",
+            "Active Motor index",
+            "Transmit error count", "Receive error count",      motor_status_func],
     0x242: ["Motor Controller Bus", "Voltage", "Current",       two_word_func],
     0x243: ["Velocity", "m/s", "rpm",                           two_word_func],
     0x244: ["Motor Controller Phase Current", "B", "C",         two_word_func],
@@ -105,6 +125,12 @@ def CANparse(data):
         return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
             for i in [1,2,3,4]]
     
+    elif(CANIDs[canID][-1] == motor_status_func):
+        for i in range(1, 20):
+            logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
+        return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
+            for i in range(1, 20)]
+    
     else:
         logging.debug(CANIDs[canID][0] + ": " + str(packet[1]) + "\n")
         return Point(CANIDs[canID][0]).field(packet[0], packet[1]) #return just index and data
@@ -112,7 +138,7 @@ def CANparse(data):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     #i = [0x00, 0x00, 0x05, 0x81, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0xFF, 0xFF, 0xFF] #IO_STATE
-    i = [0x00, 0x00, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, 0x00, 0x0C] #Motor Controller Bus 12V 100A
+    i = [0x00, 0x00, 0x02, 0x41, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x00, 0xFF, 0xFF, 0xFF, 0xFF] #Motor Controller Bus 12V 100A
     canID = i[3::-1]
     idx = i[7:3:-1]
     data = i[16:7:-1]
