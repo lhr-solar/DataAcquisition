@@ -24,6 +24,9 @@ def two_word_func(load):
 def index_func(load):
     return struct.unpack('<II', load[0:8]) + (0,)
 
+def four_byte_func(load):
+    return struct.unpack('<IBBBB', load[0:8]) + (0,)
+
 
 CANIDs = {
     0x001: ["Dash Kill Switch",                                 unsigned_func],
@@ -45,7 +48,8 @@ CANIDs = {
     0x10C: ["Charging Enabled",                                 unsigned_func],
 
     0x580: ["CONTROL_MODE",                                     unsigned_func],      #int enum
-    0x581: ["Car Data",                                         unsigned_func],
+    0x581: ["IO_STATE", "Contactor Bitmap", "Switch Bitmap",
+            "Brake Pedal", "Accel Pedal",                       four_byte_func],
     0x242: ["Motor Controller Bus", "Current", "Voltage",       two_word_func],
     0x243: ["Velocity", "m/s", "rpm",                           two_word_func],
     0x244: ["Motor Controller Phase Current", "B", "C",         two_word_func],
@@ -98,3 +102,11 @@ def CANparse(data):
             [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
             for i in [1,2]] 
     )
+
+if __name__ == "__main__":
+    i = [0x00, 0x00, 0x05, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFF, 0xFF, 0xFF] #IO_STATE
+    canID = i[3::-1]
+    idx = i[7:3:-1]
+    data = i[16:7:-1]
+    canSend = bytearray(canID + idx + data)
+    print(CANparse(canSend))
