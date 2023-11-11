@@ -48,8 +48,8 @@ CANIDs = {
     0x10C: ["Charging Enabled",                                 unsigned_func],
 
     0x580: ["CONTROL_MODE",                                     unsigned_func],      #int enum
-    0x581: ["IO_STATE", "Contactor Bitmap", "Switch Bitmap",
-            "Brake Pedal", "Accel Pedal",                       four_byte_func],
+    0x581: ["IO_STATE", "Accel Pedal", "Brake Pedal",
+            "Switch Bitmap", "Contactor Bitmap",                four_byte_func],
     0x242: ["Motor Controller Bus", "Current", "Voltage",       two_word_func],
     0x243: ["Velocity", "m/s", "rpm",                           two_word_func],
     0x244: ["Motor Controller Phase Current", "B", "C",         two_word_func],
@@ -93,8 +93,8 @@ def CANparse(data):
     if (packet[2] == 0):
         logging.debug(CANIDs[canID][0] + ": " + str(packet[1]) + "\n")
     else:
-        logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][1] + ": " + str(packet[1]))
-        logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][2] + ": " + str(packet[2]) + "\n")
+        print(CANIDs[canID][0] + "->" + CANIDs[canID][1] + ": " + str(packet[1]))
+        print(CANIDs[canID][0] + "->" + CANIDs[canID][2] + ": " + str(packet[2]) + "\n")
 
     return (Point(CANIDs[canID][0]).field(packet[0], packet[1]) #return just index and data
         if (packet[2] == 0)
@@ -104,7 +104,8 @@ def CANparse(data):
     )
 
 if __name__ == "__main__":
-    i = [0x00, 0x00, 0x05, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFF, 0xFF, 0xFF] #IO_STATE
+    i = [0x00, 0x00, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0xFF, 0xFF, 0xFF] #IO_STATE
+    #i = [0x00, 0x00, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, 0x00, 0x0C] #Motor Controller Bus 12V 100A
     canID = i[3::-1]
     idx = i[7:3:-1]
     data = i[16:7:-1]
