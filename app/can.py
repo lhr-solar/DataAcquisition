@@ -36,13 +36,30 @@ def motor_status_func(load):
     data = struct.unpack('<HBB', load[8:12])
     return idx + tuple(limit_flags) + tuple(error_flags) + tuple(data)
 
-# TODO: Make sure this function is correct
+def processTwoAndOneBytes(load):
+    return struct.unpack('<IHB', load[0:7]) # is [0:7] correct?
+
+def processFourAndOneByte(load):
+    return struct.unpack('<IIB', load[0:9]) # is [0:9] correct?
+
 def PV_Curve_Tracer_Profile_func(load):
+     # TODO: This function is unfinished and will not return a correct value. I processed test regieme incorrectly (I didn't identify bits 24, 25, 26 correctly) and did not get to test ID
+
+    idx = struct.unpack('<I', load[0:4])
+    first = struct.unpack('<BBB', load[4:7])
+
+    test_regieme = bin(int.from_bytes(load[7:8], byteorder='little', signed=False))[2:]
+    test_regieme = list(test_regieme)
+
+    if len(test_regieme) != 8:
+        test_regieme = [0] * (8 - len(test_regieme)) + test_regieme
+
+    test_regieme = test_regieme[0:3] # processed this incorrectly.  
 
 
-# TODO: make sure functions are correct for each CAN ID - two_word_func should be good, check that "unsigned_func" are correct
-# TODO: make sure two_word_func is correct - does it match up for all bits, ex: 0x625 and 0x240 use different bits
-# TODO: make sure all fields are with the last field in sheet     first in this dictionary
+    testID = bin(int.from_bytes(load[7:9], byteorder='little', signed=False))[2:]
+
+    return idx + first + tuple(test_regieme) + tuple()
 
 CANIDs = {
     0x001: ["Dash Kill Switch",                                 unsigned_func],
@@ -61,9 +78,9 @@ CANIDs = {
     0x108: ["CAN Error",                                        unsigned_func],
     0x109: ["BPS Command msg",                                  unsigned_func],
     0x10B: ["Supplemental Voltage",                             unsigned_func],
-    0x10C: ["Charging Enabled",                                 unsigned_func],
+    0x10C: ["Charging Enabled",                                 unsigned_func], 
 
-    0x580: ["CONTROL_MODE",                                     unsigned_func],      #int enum
+    0x580: ["CONTROL_MODE",                                     unsigned_func],     # need custom
     0x581: ["IO_STATE", "Accel Pedal", "Brake Pedal",
             "Switch Bitmap", "Contactor Bitmap",                four_byte_func],
     0x240: ["Motor Controller Identification", "Prohelion ID",
@@ -81,61 +98,67 @@ CANIDs = {
             "Active Motor index",
             "Transmit error count", "Receive error count",      motor_status_func],
     0x242: ["Motor Controller Bus", "Voltage", "Current",       two_word_func],
-    0x243: ["Velocity", "m/s", "rpm",                           two_word_func],
+    0x243: ["Velocity", "rpm", "m/s",                           two_word_func], # swapped fields to correct order
     0x244: ["Motor Controller Phase Current", "B", "C",         two_word_func],
-    0x245: ["Motor Voltage Vector", "Real", "Imaginary",        two_word_func],
-    0x246: ["Motor Current Vector", "Real", "Imaginary",        two_word_func],
-    0x247: ["Motor BackEMF", "Real", "Phase Peak",              two_word_func],
-    0x248: ["15V Voltage Rail",  "Actual Voltage",              two_word_func], # not including reserved, only including actual voltage so we use two_word_func, make sure this is correct though
+    0x245: ["Motor Voltage Vector", "Imaginary", "Real",        two_word_func], # swapped fields to correct order
+    0x246: ["Motor Current Vector", "Imaginary", "Real",        two_word_func], # swapped fields to correct order
+    0x247: ["Motor BackEMF", "Phase Peak", "Real",              two_word_func], # swapped fields to correct order
+    0x248: ["15V Voltage Rail",  "Actual Voltage",              two_word_func], 
     0x249: ["3.3V and 1.9V Voltage Rail Measurement", 
             "Actual 1.9V DSP Power Rail Voltage", 
             "Actal 3.3V rail voltage",                          two_word_func], # added
-    0x24B: ["Motor Temperature", "Phase C", "Internal",         two_word_func], # other 2 fields don't match table
-    0x24C: ["DSP Board Temperature", "DSP board temp",          two_word_func], # same issue with 0x248, unsure of what fields to include and if two_word_func will process correctly
-    0x24E: ["Odometer & Bus Amp Hours", "Charge", "Distance",   two_word_func], 
+    0x24B: ["Motor Temperature", "Internal motor temp", 
+            "Internal heat-sink temp",                          two_word_func], # changed fields to match
+    # 0x24B: ["Motor Temperature", "Phase C", "Internal",         two_word_func], # other 2 fields don't match table
+    0x24C: ["DSP Board Temperature", "DSP board temp",          two_word_func], 
+    # 0x24E: ["Odometer & Bus Amp Hours", "Charge", "Distance",   two_word_func], # changed fields to match
+    0x24E: ["Odometer & Bus Amp Hours", "Distance travelled since reset", 
+            "Charge flow into controller DC bus from reset",    two_word_func], 
     0x257: ["Slip Speed Measurement", "Distance", "Slip speed", two_word_func],
-    0x24F: ["Array Contactor State Change",                     unsigned_func],
+    0x24F: ["Array Contactor State Change",                     unsigned_func], 
 
     0x600: ["Sunscatter A Array Voltage Setpoint",              float_func],
     0x601: ["Sunscatter A Array Voltage Measurement",           float_func],
     0x602: ["Sunscatter A Array Current Measurement",           float_func],
     0x603: ["Sunscatter A Battery Voltage Measurement",         float_func],
     0x604: ["Sunscatter A Battery Current Measurement",         float_func],
-    0x605: ["Sunscatter A Override command",                    unsigned_func],
+    0x605: ["Sunscatter A Override command",                    unsigned_func], # is this func correct?
     0x606: ["Sunscatter A Fault",                               unsigned_func],
     0x610: ["Sunscatter B Array Voltage Setpoint",              float_func],
     0x611: ["Sunscatter B Array Voltage Measurement",           float_func],
     0x612: ["Sunscatter B Array Current Measurement",           float_func],
     0x613: ["Sunscatter B Battery Voltage Measurement",         float_func],
     0x614: ["Sunscatter B Battery Current Measurement",         float_func],
-    0x615: ["Sunscatter B Override command",                    unsigned_func],
+    0x615: ["Sunscatter B Override command",                    unsigned_func], # is this func correct?
     0x616: ["Sunscatter B Fault",                               unsigned_func],
 
-    0x620: ["Blackbody RTD Sensor Measurement",                 index_func], # doesn't match - on sheet is "heartbeat". unsure what to do
-    0x621: ["Set Mode",                                         unsigned_func], # added
+    # 0x620: ["Blackbody RTD Sensor Measurement",                 index_func], # doesn't match - on sheet is "heartbeat". unsure what to do
+    0x620: ["Heartbeat",                                        unsigned_func], 
+    0x621: ["Set Mode",                                         unsigned_func], # added 
     0x622: ["Blackbody Board Fault",                            unsigned_func], # added
-    0x623: ["Acknowledge Fault",                                unsigned_func], # added
+    0x623: ["Acknowledge Fault",                                unsigned_func], # added 
     0x624: ["RTD Configure", 
             "RTD Sample Frequency", 
-            "Enabled RTDs",                                     two_word_func], # added
+            "Enabled RTDs",                                     processTwoAndOneBytes], # added #^^ need custom [23:16] [15:0] 1 2
+
     0x625: ["Irradiance Configure", 
             "Irradiance Sample Frequency", 
-            "Enabled Irradiance Sensor",                        two_word_func], # added
+            "Enabled Irradiance Sensor",                        processTwoAndOneBytes], # added #^^ need custom [23:16] [15:0]
     0x626: ["Blackbody (RTD Sensor) Measurement", 
             "Temperature measurement", 
-            "RTD ID",                                           two_word_func], # added - might need own function, look at field members, use different bits
+            "RTD ID",                                           processFourAndOneByte], # added # ^^ need custom [39:32][31:0] 1 4
 
     0x627: ["Blackbody Irradiance Measurement", 
             "Irradiance measurement", 
-            "Irradiance Sensor ID",                             two_word_func], # added - also might need special function
+            "Irradiance Sensor ID",                             processFourAndOneByte], # added # ^^ need custom [39:32][31:0]  1  4
 
 
-    # 0x630: ["Blackbody Irradiance Sensor 1 Measurement",        float_func], # not on sheet
-    # 0x631: ["Blackbody Irradiance Sensor 2 Measurement",        float_func], # not on sheet
-    # 0x632: ["Blackbody Irradiance Board command",               unsigned_func], # not on sheet
-    # 0x633: ["Blackbody Irradiance Board Fault",                 unsigned_func], # not on sheet
+    0x630: ["Blackbody Irradiance Sensor 1 Measurement",        float_func], # not on sheet
+    0x631: ["Blackbody Irradiance Sensor 2 Measurement",        float_func], # not on sheet
+    0x632: ["Blackbody Irradiance Board command",               unsigned_func], # not on sheet
+    0x633: ["Blackbody Irradiance Board Fault",                 unsigned_func], # not on sheet
     # 0x640: ["PV Curve Tracer Profile",                          unsigned_func], # needs custom function
-    0x640: ["PV Curve Tracer Profile", "PWMResolution", "End PWM", "Start PWM", "Test Regime", "Test ID", PV_Curve_Tracer_Profile_func],
+    0x640: ["PV Curve Tracer Profile", "PWMResolution", "End PWM", "Start PWM", "Test Regime", "Test ID", PV_Curve_Tracer_Profile_func] # ^^ need custom
 
 }
 
@@ -173,8 +196,11 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     #i = [0x00, 0x00, 0x05, 0x81, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0xFF, 0xFF, 0xFF] #IO_STATE
     i = [0x00, 0x00, 0x02, 0x41, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x00, 0xFF, 0xFF, 0xFF, 0xFF] #Motor Controller Bus 12V 100A
+    
     canID = i[3::-1]
     idx = i[7:3:-1]
     data = i[16:7:-1]
+    # print("data: ", bytearray(data))
+    print(bin(int.from_bytes(bytearray(data))))
     canSend = bytearray(canID + idx + data)
     print(CANparse(canSend))
