@@ -50,6 +50,8 @@ CANIDs = {
     0x580: ["CONTROL_MODE",                                     unsigned_func],      #int enum
     0x581: ["IO_STATE", "Accel Pedal", "Brake Pedal",
             "Switch Bitmap", "Contactor Bitmap",                four_byte_func],
+    0x240: ["Motor Controller Identification", "Prohelion ID",
+            "Device serial number",                             two_word_func],
     0x242: ["Motor Controller Bus", "Voltage", "Current",       two_word_func],
     0x243: ["Velocity", "m/s", "rpm",                           two_word_func],
     0x244: ["Motor Controller Phase Current", "B", "C",         two_word_func],
