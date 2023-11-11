@@ -50,7 +50,7 @@ CANIDs = {
     0x580: ["CONTROL_MODE",                                     unsigned_func],      #int enum
     0x581: ["IO_STATE", "Accel Pedal", "Brake Pedal",
             "Switch Bitmap", "Contactor Bitmap",                four_byte_func],
-    0x242: ["Motor Controller Bus", "Current", "Voltage",       two_word_func],
+    0x242: ["Motor Controller Bus", "Voltage", "Current",       two_word_func],
     0x243: ["Velocity", "m/s", "rpm",                           two_word_func],
     0x244: ["Motor Controller Phase Current", "B", "C",         two_word_func],
     0x245: ["Motor Voltage Vector", "Real", "Imaginary",        two_word_func],
@@ -90,22 +90,27 @@ def CANparse(data):
     canID = int.from_bytes(data[0:4], "little")
     logging.debug(canID)
     packet = CANIDs[canID][-1](data[4:])
-    if (packet[2] == 0):
-        logging.debug(CANIDs[canID][0] + ": " + str(packet[1]) + "\n")
+    
+    if (CANIDs[canID][-1] == two_word_func):
+        for i in range(1,3):
+            logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
+        return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
+            for i in [1,2]]
+    
+    elif (CANIDs[canID][-1] == four_byte_func):
+        for i in range(1,5):
+            logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
+        return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
+            for i in [1,2,3,4]]
+    
     else:
-        print(CANIDs[canID][0] + "->" + CANIDs[canID][1] + ": " + str(packet[1]))
-        print(CANIDs[canID][0] + "->" + CANIDs[canID][2] + ": " + str(packet[2]) + "\n")
-
-    return (Point(CANIDs[canID][0]).field(packet[0], packet[1]) #return just index and data
-        if (packet[2] == 0)
-        else 
-            [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
-            for i in [1,2]] 
-    )
+        logging.debug(CANIDs[canID][0] + ": " + str(packet[1]) + "\n")
+        return Point(CANIDs[canID][0]).field(packet[0], packet[1]) #return just index and data
 
 if __name__ == "__main__":
-    i = [0x00, 0x00, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0xFF, 0xFF, 0xFF] #IO_STATE
-    #i = [0x00, 0x00, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, 0x00, 0x0C] #Motor Controller Bus 12V 100A
+    logging.basicConfig(level=logging.DEBUG)
+    #i = [0x00, 0x00, 0x05, 0x81, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0xFF, 0xFF, 0xFF] #IO_STATE
+    i = [0x00, 0x00, 0x02, 0x42, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64, 0x00, 0x00, 0x00, 0x0C] #Motor Controller Bus 12V 100A
     canID = i[3::-1]
     idx = i[7:3:-1]
     data = i[16:7:-1]
