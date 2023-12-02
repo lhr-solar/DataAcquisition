@@ -3,10 +3,7 @@ import logging
 
 
 def GPSparse(data):
-    # print("Data for GPSparse: ", data) # ^ I added for test
-
     data = ['0' if i == 0 else chr(i) for i in data]
-    # print("gps data array after pop: ", data)
     logging.debug(data)
 
     #lat and lon is recognized by influxdb in order to show gui with map
