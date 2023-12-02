@@ -18,14 +18,35 @@ def unsigned_func(load):
 def signed_func(load):
     return struct.unpack('<Ii', load[0:8]) + (0,)
 
-def two_word_func(load):
-    return struct.unpack('<III', load[0:12])
+def signed_float_func(load):
+    return struct.unpack('<If', load[0:12]) + (0,)
 
 def index_func(load):
     return struct.unpack('<II', load[0:8]) + (0,)
 
+def two_word_func(load):
+    return struct.unpack('<III', load[0:12])
+
+def word_byte_func(load):
+    return struct.unpack('<IHB', load[0:12]) + (0,)
+
+def signedWord_byte_func(load):
+    return struct.unpack('<IfB', load[0:12]) + (0,)
+
+def processTwoAndOneBytes(load):
+    return struct.unpack('<IHB', load[0:8]) + (0,)
+
+def processFourAndOneByte(load):
+    return struct.unpack('<IIB', load[0:12]) + (0,)
+
+def signed_float_two_word_func(load):
+    return struct.unpack('<Iff', load[0:12]) + (0,)
+
 def four_byte_func(load):
     return struct.unpack('<IBBBB', load[0:8]) + (0,)
+
+def sunScatterSensorConfigure(load):
+    return struct.unpack('<IHBBB', load[0:12]) + (0,)
 
 def motor_status_func(load):
     idx = struct.unpack('<I', load[0:4])
@@ -36,48 +57,7 @@ def motor_status_func(load):
     data = struct.unpack('<HBB', load[8:12])
     return idx + tuple(limit_flags) + tuple(error_flags) + tuple(data)
 
-def sunScatterSensorConfigure(load):
-    return struct.unpack('<IHBBB', load[0:12]) + (0,)
 
-def signed_float_two_word_func(load):
-    return struct.unpack('<Iff', load[0:12]) + (0,)
-
-def signed_float_func(load):
-    return struct.unpack('<If', load[0:12]) + (0,)
-
-def word_byte_func(load):
-    return struct.unpack('<IHB', load[0:12]) + (0,)
-
-def signedWord_byte_func(load):
-    return struct.unpack('<IfB', load[0:12]) + (0,)
-
-
-
-
-def processTwoAndOneBytes(load):
-    return struct.unpack('<IHB', load[0:7]) # is [0:7] correct?
-
-def processFourAndOneByte(load):
-    return struct.unpack('<IIB', load[0:9]) # is [0:9] correct?
-
-def PV_Curve_Tracer_Profile_func(load):
-     # TODO: This function is unfinished and will not return a correct value. I processed test regieme incorrectly (I didn't identify bits 24, 25, 26 correctly) and did not get to test ID
-
-    idx = struct.unpack('<I', load[0:4])
-    first = struct.unpack('<BBB', load[4:7])
-
-    test_regieme = bin(int.from_bytes(load[7:8], byteorder='little', signed=False))[2:]
-    test_regieme = list(test_regieme)
-
-    if len(test_regieme) != 8:
-        test_regieme = [0] * (8 - len(test_regieme)) + test_regieme
-
-    test_regieme = test_regieme[0:3] # processed this incorrectly.  
-
-
-    testID = bin(int.from_bytes(load[7:9], byteorder='little', signed=False))[2:]
-
-    return idx + first + tuple(test_regieme) + tuple()
 
 CANIDs = {
     0x001: ["Dash Kill Switch",                                 unsigned_func],
@@ -196,20 +176,24 @@ def CANparse(data):
     canID = int.from_bytes(data[0:4], "little")
     logging.debug(canID)
     packet = CANIDs[canID][-1](data[4:])
+    canIdFunction = CANIDs[canID][-1]
     
-    if (CANIDs[canID][-1] == two_word_func):
+    twoFieldFunctions = [two_word_func, word_byte_func, signedWord_byte_func, processTwoAndOneBytes, processFourAndOneByte, signed_float_two_word_func]
+    fourFieldFunctions = [four_byte_func, sunScatterSensorConfigure]
+
+    if (canIdFunction in twoFieldFunctions):
         for i in range(1,3):
             logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
         return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
             for i in [1,2]]
     
-    elif (CANIDs[canID][-1] == four_byte_func):
+    elif (canIdFunction in fourFieldFunctions):
         for i in range(1,5):
             logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
         return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
             for i in [1,2,3,4]]
     
-    elif(CANIDs[canID][-1] == motor_status_func):
+    elif(canIdFunction == motor_status_func):
         for i in range(1, 20):
             logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
         return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
@@ -218,12 +202,6 @@ def CANparse(data):
     else:
         logging.debug(CANIDs[canID][0] + ": " + str(packet[1]) + "\n")
         return Point(CANIDs[canID][0]).field(packet[0], packet[1]) #return just index and data
-
-def func(x):
-    return x
-
-def test_answer():
-    assert func(3) == 5
 
 
 if __name__ == "__main__":
