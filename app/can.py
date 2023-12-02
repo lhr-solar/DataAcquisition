@@ -37,19 +37,19 @@ def motor_status_func(load):
     return idx + tuple(limit_flags) + tuple(error_flags) + tuple(data)
 
 def sunScatterSensorConfigure(load):
-    return struct.unpack('<IHBBB', load[0:12])
+    return struct.unpack('<IHBBB', load[0:12]) + (0,)
 
 def signed_float_two_word_func(load):
-    return struct.unpack('<Iff', load[0:12])
+    return struct.unpack('<Iff', load[0:12]) + (0,)
 
 def signed_float_func(load):
-    return struct.unpack('<If', load[0:12]) 
+    return struct.unpack('<If', load[0:12]) + (0,)
 
 def word_byte_func(load):
-    return struct.unpack('<IHB', load[0:12])
+    return struct.unpack('<IHB', load[0:12]) + (0,)
 
 def signedWord_byte_func(load):
-    return struct.unpack('<IfB', load[0:12])
+    return struct.unpack('<IfB', load[0:12]) + (0,)
 
 
 
