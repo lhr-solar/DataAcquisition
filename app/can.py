@@ -78,9 +78,15 @@ CANIDs = {
     0x245: ["Motor Voltage Vector", "Real", "Imaginary",        two_word_func],
     0x246: ["Motor Current Vector", "Real", "Imaginary",        two_word_func],
     0x247: ["Motor BackEMF", "Real", "Phase Peak",              two_word_func],
+    0x248: ["15V Voltage Rail",  "Actual Voltage",              two_word_func], # not including reserved, only including actual voltage so we use two_word_func, make sure this is correct though
+    0x249: ["3.3V and 1.9V Voltage Rail Measurement", 
+            "Actual 1.9V DSP Power Rail Voltage", 
+            "Actal 3.3V rail voltage",                          two_word_func], # added
     0x24B: ["Motor Temperature", "Phase C", "Internal",         two_word_func],
+    0x24C: ["DSP Board Temperature", "DSP board temp",          two_word_func],
     0x24E: ["Odometer & Bus Amp Hours", "Charge", "Distance",   two_word_func],
     0x24F: ["Array Contactor State Change",                     unsigned_func],
+    0x257: ["Slip Speed Measurement", "Distance", "Slip speed", two_word_func],
 
     0x600: ["Sunscatter A Array Voltage Setpoint",              float_func],
     0x601: ["Sunscatter A Array Voltage Measurement",           float_func],
@@ -98,6 +104,22 @@ CANIDs = {
     0x616: ["Sunscatter B Fault",                               unsigned_func],
 
     0x620: ["Blackbody RTD Sensor Measurement",                 index_func],
+    0x621: ["Set Mode",                                         unsigned_func], # added
+    0x622: ["Blackbody Board Fault",                            unsigned_func], # added
+    0x623: ["Acknowledge Fault",                                unsigned_func], # added
+    0x624: ["RTD Configure", 
+            "RTD Sample Frequency", 
+            "Enabled RTDs",                                     two_word_func], # added
+    0x625: ["Irradiance Configure", 
+            "Irradiance Sample Frequency", 
+            "Enabled Irradiance Sensor",                        two_word_func], # added
+    0x626: ["Blackbody (RTD Sensor) Measurement", 
+            "Temperature measurement", 
+            "RTD ID",                                           two_word_func], # added - might need own function, look at field members, use different bits
+
+    0x627: ["Blackbody Irradiance Measurement", 
+            "Irradiance measurement", 
+            "Irradiance Sensor ID",                             two_word_func], # added - also might need special function
     0x630: ["Blackbody Irradiance Sensor 1 Measurement",        float_func],
     0x631: ["Blackbody Irradiance Sensor 2 Measurement",        float_func],
     0x632: ["Blackbody Irradiance Board command",               unsigned_func],
@@ -143,4 +165,5 @@ if __name__ == "__main__":
     idx = i[7:3:-1]
     data = i[16:7:-1]
     canSend = bytearray(canID + idx + data)
-    print(CANparse(canSend))
+    points = CANparse(canSend)
+    print(points[0].measurement)
