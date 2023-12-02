@@ -121,14 +121,14 @@ CANIDs = {
     0x245: ["Motor Voltage Vector", "Imaginary", "Real",        two_word_func],
     0x246: ["Motor Current Vector", "Imaginary", "Real",        two_word_func], 
     0x247: ["Motor BackEMF", "Phase Peak", "Real",              two_word_func], 
-    0x248: ["15V Voltage Rail",  "Actual Voltage",              two_word_func], # reserved not a field?
+    0x248: ["15V Voltage Rail", "Reserved", "Actual Voltage",              two_word_func], # reserved not a field?
     0x249: ["3.3V and 1.9V Voltage Rail Measurement", 
             "Actual 1.9V DSP Power Rail Voltage", 
             "Actal 3.3V rail voltage",                          two_word_func], 
     0x24B: ["Motor Temperature", "Internal motor temp", 
             "Internal heat-sink temp",                          two_word_func], 
     # 0x24B: ["Motor Temperature", "Phase C", "Internal",         two_word_func], # other 2 fields don't match table
-    0x24C: ["DSP Board Temperature", "DSP board temp",          two_word_func], # reserved not given a field?
+    0x24C: ["DSP Board Temperature", "DSP board temp" , "Reserved",     two_word_func], # reserved not given a field?
     # 0x24E: ["Odometer & Bus Amp Hours", "Charge", "Distance",   two_word_func], 
     0x24E: ["Odometer & Bus Amp Hours", "Distance travelled since reset", 
             "Charge flow into controller DC bus from reset",    two_word_func], 
