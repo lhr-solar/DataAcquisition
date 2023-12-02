@@ -107,9 +107,7 @@ CANIDs = {
             "Actal 3.3V rail voltage",                          two_word_func], 
     0x24B: ["Motor Temperature", "Internal motor temp", 
             "Internal heat-sink temp",                          two_word_func], 
-    # 0x24B: ["Motor Temperature", "Phase C", "Internal",         two_word_func], # other 2 fields don't match table
     0x24C: ["DSP Board Temperature", "DSP board temp" , "Reserved",     two_word_func], # reserved not given a field?
-    # 0x24E: ["Odometer & Bus Amp Hours", "Charge", "Distance",   two_word_func], 
     0x24E: ["Odometer & Bus Amp Hours", "Distance travelled since reset", 
             "Charge flow into controller DC bus from reset",    two_word_func], 
     0x257: ["Slip Speed Measurement", "Distance", "Slip speed", two_word_func],
