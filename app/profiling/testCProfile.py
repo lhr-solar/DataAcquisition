@@ -1,8 +1,3 @@
-
-# TODO: Figure out how to test the CAN.Parse function
-# TODO:     see what you need to do for CAN.Parse to allow CAN_Test_Data as input
-
-
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -58,9 +53,9 @@ def testGPS():
 
     return
 
-# cProfile.run("testCAN()")
+cProfile.run("testCAN()")
 cProfile.run("testIMU()")
-# cProfile.run("testGPS()")
+cProfile.run("testGPS()")
 
 
 
