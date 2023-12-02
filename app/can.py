@@ -4,13 +4,17 @@ from influxdb_client import Point
 
 
 def float_func(load):
+    print(struct.unpack('<If', load[0:8]) + (0,))
     return struct.unpack('<If', load[0:8]) + (0,)
 
 def fixed_func(load):
     unpacked = struct.unpack('<Iq', load[0:12])
     unpacked_list = list(unpacked)
+    print(unpacked_list)
     unpacked_list[1] /= 1000000
+    print(tuple(unpacked_list) + (0,))
     return tuple(unpacked_list) + (0,)
+
 
 def unsigned_func(load):
     return struct.unpack('<IQ', load[0:12]) + (0,)
@@ -22,6 +26,7 @@ def two_word_func(load):
     return struct.unpack('<III', load[0:12])
 
 def index_func(load):
+    print(struct.unpack('<II', load[0:8]) + (0,))
     return struct.unpack('<II', load[0:8]) + (0,)
 
 def four_byte_func(load):
@@ -29,10 +34,11 @@ def four_byte_func(load):
 
 def motor_status_func(load):
     idx = struct.unpack('<I', load[0:4])
-    limit_flags = [int(i) for i in bin(int.from_bytes(load[4:6], byteorder='little', signed=False))[2:]]
-    limit_flags = limit_flags[0:7]
-    error_flags = [int(i) for i in bin(int.from_bytes(load[6:8], byteorder='little', signed=False))[2:]]
-    error_flags = error_flags[0:9]
+    print("idx:", idx)
+    limit_flags =   [int(bit) for byte in load[4:6] for bit in f"{byte:08b}"[::-1]]
+    limit_flags = limit_flags[0:7] # Only take the first 7 b/c bit[7] to bit [15] are reserved (not used now)
+    error_flags = [int(bit) for byte in load[6:8] for bit in f"{byte:08b}"[::-1]] 
+    error_flags = error_flags[0:9] # Only take the first 9 b/c bit[25] to bit [31] are reserved (not used now)
     data = struct.unpack('<HBB', load[8:12])
     return idx + tuple(limit_flags) + tuple(error_flags) + tuple(data)
 
@@ -183,10 +189,10 @@ def CANparse(data):
             for i in [1,2,3,4]]
     
     elif(CANIDs[canID][-1] == motor_status_func):
-        for i in range(1, 20):
+        for i in range(1, min(20, len(CANIDs[canID]), len(packet))): # Added b/c was getting out of index error 
             logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
         return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
-            for i in range(1, 20)]
+            for i in range(1, min(20, len(CANIDs[canID]), len(packet)))] #Added b/c was getting out of index error 
     
     else:
         logging.debug(CANIDs[canID][0] + ": " + str(packet[1]) + "\n")
@@ -201,6 +207,8 @@ if __name__ == "__main__":
     idx = i[7:3:-1]
     data = i[16:7:-1]
     # print("data: ", bytearray(data))
-    print(bin(int.from_bytes(bytearray(data))))
+    #print(bin(int.from_bytes(bytearray(data))))
+    
     canSend = bytearray(canID + idx + data)
+    print(canSend)
     print(CANparse(canSend))
