@@ -87,4 +87,4 @@ def receiver():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
-    cProfile(receiver())
+    receiver()
