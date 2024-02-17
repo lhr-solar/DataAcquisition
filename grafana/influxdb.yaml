@@ -11,10 +11,9 @@ datasources:
     url: http://influxdb:8086
     secureJsonData:
       token: $DOCKER_INFLUXDB_INIT_ADMIN_TOKEN
+      httpHeaderValue1: 'Token $DOCKER_INFLUXDB_INIT_ADMIN_TOKEN'
     jsonData:
       version: Flux
       organization: $DOCKER_INFLUXDB_INIT_ORG
       httpHeaderName1: 'Authorization'
       tlsSkipVerify: true
-    secureJsonData:
-      httpHeaderValue1: 'Token $DOCKER_INFLUXDB_INIT_ADMIN_TOKEN'

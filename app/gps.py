@@ -3,7 +3,6 @@ import logging
 
 
 def GPSparse(data):
-
     data = ['0' if i == 0 else chr(i) for i in data]
     logging.debug(data)
 
