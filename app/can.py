@@ -19,7 +19,7 @@ def signed_func(load):
     return struct.unpack('<Ii', load[0:8]) + (0,)
 
 def signed_float_func(load):
-    return struct.unpack('<If', load[0:12]) + (0,)
+    return struct.unpack('<If', load[0:8]) + (0,)
 
 def index_func(load):
     return struct.unpack('<II', load[0:8]) + (0,)
@@ -28,16 +28,16 @@ def two_word_func(load):
     return struct.unpack('<III', load[0:12])
 
 def word_byte_func(load):
-    return struct.unpack('<IHB', load[0:12]) + (0,)
+    return struct.unpack('<IHB', load[0:7]) + (0,)
 
 def signedWord_byte_func(load):
-    return struct.unpack('<IfB', load[0:12]) + (0,)
+    return struct.unpack('<IfB', load[0:9]) + (0,)
 
 def processTwoAndOneBytes(load):
-    return struct.unpack('<IHB', load[0:8]) + (0,)
+    return struct.unpack('<IHB', load[0:7]) + (0,)
 
 def processFourAndOneByte(load):
-    return struct.unpack('<IIB', load[0:12]) + (0,)
+    return struct.unpack('<IIB', load[0:9]) + (0,)
 
 def signed_float_two_word_func(load):
     return struct.unpack('<Iff', load[0:12]) + (0,)
@@ -46,7 +46,7 @@ def four_byte_func(load):
     return struct.unpack('<IBBBB', load[0:8]) + (0,)
 
 def sunScatterSensorConfigure(load):
-    return struct.unpack('<IHBBB', load[0:12]) + (0,)
+    return struct.unpack('<IHBBB', load[0:9]) + (0,)
 
 def motor_status_func(load):
     idx = struct.unpack('<I', load[0:4])
@@ -176,7 +176,7 @@ def CANparse(data):
     packet = CANIDs[canID][-1](data[4:])
     canIdFunction = CANIDs[canID][-1]
     
-    twoFieldFunctions = [two_word_func, word_byte_func, signedWord_byte_func, processTwoAndOneBytes, processFourAndOneByte, signed_float_two_word_func]
+    twoFieldFunctions = [two_word_func, word_byte_func, processTwoAndOneBytes, processFourAndOneByte, signed_float_two_word_func]
     fourFieldFunctions = [four_byte_func, sunScatterSensorConfigure]
 
     if (canIdFunction in twoFieldFunctions):

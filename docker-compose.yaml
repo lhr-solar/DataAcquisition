@@ -43,7 +43,8 @@ services:
         target: /app
     working_dir: /app
     ports:
-      - 192.168.1.224:65432:65432 # This is the IP address that the telemetry system directly connects to
+      #- 192.168.1.224:65432:65432 # This is the IP address that Sunlight directly connects to
+      - 169.254.57.78:65432:65432 # This is the IP address that BackupSunlight directly connects to
     depends_on:
       - influxdb
   # use with docker-compose --profile sim up --build
