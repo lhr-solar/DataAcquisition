@@ -5,15 +5,14 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 import socket
 import os
 import logging
-
 import traceback
 import sys
-
-
 import can
 import gps
 import imu
 import cProfile
+import asyncio
+import aioconsole
 
 HOST = ""  # This listens to every interface
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
@@ -22,49 +21,30 @@ GPS_ID = 2
 CAN_ID = 3
 
 
-def connect_socket(s: socket) -> socket:
+class ServerDisconnectError(Exception):
+    pass
 
+def connect_socket(s: socket) -> socket:
     logging.debug(f"Server listening on {HOST}")
     s.listen(1)
     (conn, addr) = s.accept()
     logging.debug(f"Server accepted {addr}")
     return conn
 
-
 def reconnect_socket(server: socket, conn: socket) -> socket:
-
     logging.warning("Server Disconnected")
     conn.close()
     return connect_socket(server)
 
-
-class ServerDisconnectError(Exception):
+async def dummy_function():
     pass
 
-
-def receiver():
-
-    s = socket.create_server(address=(HOST, PORT), family=socket.AF_INET)
-    logging.debug("Server starting...")
-    s.setblocking(True)
-    conn = connect_socket(s)
-
-    client = InfluxDBClient(
-        url="http://influxdb:8086",
-        token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(),
-        org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip(),
-    )
-    logging.debug("Influx client created.")
-    write_api = client.write_api(write_options=SYNCHRONOUS)
-
-    buf = bytearray(4096)
-
-    parser = {IMU_ID: imu.IMUparse, GPS_ID: gps.GPSparse, CAN_ID: can.CANparse}
+async def receive_data(conn, write_api, parser, buf, server):
     while True:
         try:
             data = conn.recv(4096)
-            if data:
-                logging.debug(data)
+            # if data:
+                # logging.debug(data)
             
             if conn.recv_into(buf, 2) == 0:
                 logging.warning("Empty")
@@ -93,9 +73,38 @@ def receiver():
                 print(traceback.format_exc())
                 print(sys.exc_info()[2])
         except ServerDisconnectError:
-            conn = reconnect_socket(s, conn)
+            conn = reconnect_socket(server, conn)
+
+async def read_console():
+    while True:
+        user_input = await aioconsole.ainput("Enter a command: ")
+        logging.debug(f"Received from console: {user_input}")
+
+async def main():
+    # Create socket
+    s = socket.create_server(address=(HOST, PORT), family=socket.AF_INET)
+    logging.debug("Server starting...")
+    s.setblocking(True)
+    conn = connect_socket(s)
+
+    client = InfluxDBClient(
+        url="http://influxdb:8086",
+        token=os.environ.get("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN").strip(),
+        org=os.environ.get("DOCKER_INFLUXDB_INIT_ORG").strip(),
+    )
+    logging.debug("Influx client created.")
+    write_api = client.write_api(write_options=SYNCHRONOUS)
+
+    buf = bytearray(4096)
+    parser = {IMU_ID: imu.IMUparse, GPS_ID: gps.GPSparse, CAN_ID: can.CANparse}
+
+    await asyncio.gather(
+        receive_data(conn, write_api, parser, buf, s),
+        # dummy_function(),
+        read_console()
+    )
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    receiver()
+    asyncio.run(main())

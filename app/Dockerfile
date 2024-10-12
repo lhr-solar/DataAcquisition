@@ -8,3 +8,5 @@ RUN pip3 install --no-cache-dir --upgrade -r /app/requirements.txt
 EXPOSE 65432
 
 CMD [ "python3", "-u", "main.py" ]
+
+ENV PYTHONUNBUFFERED=1

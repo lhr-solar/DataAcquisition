@@ -164,8 +164,8 @@ def sender():
             for i in CAN_Test_Data:
                 s.send(bytearray(eth_header_CAN + i[3::-1] + i[7:3:-1] + i[16:7:-1]))
             logging.debug("CAN sent.")
-            s.sendall(move((38.92959, -95.677242), (38.926558, -95.676713)))
-            logging.debug("GPS sent.")
+            # s.sendall(move((38.92959, -95.677242), (38.926558, -95.676713)))
+            # logging.debug("GPS sent.")
             s.sendall(generateIMU(-1000, 1000))
             logging.debug("IMU sent.")
             time.sleep(1)

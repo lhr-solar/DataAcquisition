@@ -170,9 +170,9 @@ CANIDs = {
 
 def CANparse(data):
     
-    logging.debug(data)
+    # logging.debug(data)
     canID = int.from_bytes(data[0:4], "little")
-    logging.debug(canID)
+    # logging.debug(canID)
     packet = CANIDs[canID][-1](data[4:])
     canIdFunction = CANIDs[canID][-1]
     
@@ -180,25 +180,25 @@ def CANparse(data):
     fourFieldFunctions = [four_byte_func, sunScatterSensorConfigure]
 
     if (canIdFunction in twoFieldFunctions):
-        for i in range(1,3):
-            logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
+        # for i in range(1,3):
+        #     logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
         return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
             for i in [1,2]]
     
     elif (canIdFunction in fourFieldFunctions):
-        for i in range(1,5):
-            logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
+        # for i in range(1,5):
+        #     logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
         return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
             for i in [1,2,3,4]]
     
     elif(canIdFunction == motor_status_func):
-        for i in range(1, 20):
-            logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
+        # for i in range(1, 20):
+        #     logging.debug(CANIDs[canID][0] + "->" + CANIDs[canID][i] + ": " + str(packet[i]))
         return [Point(CANIDs[canID][0]).field(CANIDs[canID][i], packet[i]) #return data type and data for both data fields
             for i in range(1, 20)]
     
     else:
-        logging.debug(CANIDs[canID][0] + ": " + str(packet[1]) + "\n")
+        # logging.debug(CANIDs[canID][0] + ": " + str(packet[1]) + "\n")
         return Point(CANIDs[canID][0]).field(packet[0], packet[1]) #return just index and data
 
 

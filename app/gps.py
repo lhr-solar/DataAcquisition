@@ -19,7 +19,7 @@ def GPSparse(data):
                 'lon':          (float(info_list[5]) / 100.0) * (-1 if info_list[6] == 'W' else 1), 
                 'MPH':          (float(info_list[7]) * 1.15078), # Data is in Knots / Hour, Have to convert Knots --> Miles 
         }
-        for key in gps:
-            logging.debug(str(key) + ": " + str(gps[key]))
-        logging.debug("\n")
+        # for key in gps:
+        #     logging.debug(str(key) + ": " + str(gps[key]))
+        # logging.debug("\n")
         return [Point("GPS").field(key, gps[key]) for key in gps]
